@@ -37,7 +37,7 @@
   ║    · un code par produit (26) et par bundle (4)                            ║
   ║      le code est la fin de l'URL du produit : payhip.com/b/Ail25 -> Ail25  ║
   ║    · une ligne laissee vide renvoie vers la boutique PAYHIP_STORE          ║
-  ║    (email et liste d'attente : linenlists@gmail.com, deja en place)       ║
+  ║    (contact et liste d'attente : le formulaire de la section #contact)     ║
   ║                                                                           ║
   ║  Every card shows the first TWO pages of the real file. Only finished      ║
   ║  products are listed — nothing is shown as buyable that isn't done.        ║
@@ -530,6 +530,7 @@ h3{font-weight:700}
           <option>A page is missing or looks wrong</option>
           <option>I was charged twice</option>
           <option>A question before I buy</option>
+          <option>I want to know when the next kit lands</option>
           <option>Something else</option>
         </select>
       </div>
@@ -542,9 +543,8 @@ h3{font-weight:700}
 
       <button class="btn" type="submit">Send message</button>
 
-      <p class="note">Your email is used to answer you, nothing else. No list, no newsletter
-        unless you ask. You can also write to
-        <a href="mailto:linenlists@gmail.com">linenlists@gmail.com</a> directly.</p>
+      <p class="note">Your email is used to answer you, nothing else. No list and no
+        newsletter unless you ask for one.</p>
     </form>
 
     <div class="sent" id="sent" hidden>
@@ -570,8 +570,8 @@ h3{font-weight:700}
       <div class="flinks">
         <a href="#free">Free downloads</a>
         <a href="#contact">Contact</a>
-        <a href="mailto:linenlists@gmail.com?subject=Waitlist">Hear when the next kit lands</a>
-        <a href="mailto:linenlists@gmail.com">linenlists@gmail.com</a>
+        <a class="waitlist" href="#contact">Hear when the next kit lands</a>
+        <a href="#contact">Contact</a>
       </div>
     </div>
     <p class="fine">Files are for personal use only — print as much as you like, please don't
@@ -595,7 +595,6 @@ h3{font-weight:700}
 
 <script>
 const PAGES = {"00-Complete-Wedding-Planning-Kit":["images/00-Complete-Wedding-Planning-Kit-1.jpg","images/00-Complete-Wedding-Planning-Kit-2.jpg"],"01-FREE-12-Month-Wedding-Checklist":["images/01-FREE-12-Month-Wedding-Checklist-1.jpg","images/01-FREE-12-Month-Wedding-Checklist-2.jpg"],"02-Wedding-Budget-Planner":["images/02-Wedding-Budget-Planner-1.jpg","images/02-Wedding-Budget-Planner-2.jpg"],"03-Wedding-Vendor-Questions":["images/03-Wedding-Vendor-Questions-1.jpg","images/03-Wedding-Vendor-Questions-2.jpg"],"04-Wedding-Guest-List-Seating-Chart":["images/04-Wedding-Guest-List-Seating-Chart-1.jpg","images/04-Wedding-Guest-List-Seating-Chart-2.jpg"],"05-Wedding-Day-Timeline":["images/05-Wedding-Day-Timeline-1.jpg","images/05-Wedding-Day-Timeline-2.jpg"],"09-Ultimate-Home-Management-Binder":["images/09-Ultimate-Home-Management-Binder-1.jpg","images/09-Ultimate-Home-Management-Binder-2.jpg"],"10-FREE-Weekly-Cleaning-Schedule":["images/10-FREE-Weekly-Cleaning-Schedule-1.jpg","images/10-FREE-Weekly-Cleaning-Schedule-2.jpg"],"11-Home-Cleaning-Schedules":["images/11-Home-Cleaning-Schedules-1.jpg","images/11-Home-Cleaning-Schedules-2.jpg"],"12-Meal-Planner-Grocery-List":["images/12-Meal-Planner-Grocery-List-1.jpg","images/12-Meal-Planner-Grocery-List-2.jpg"],"13-Pantry-Freezer-Inventory":["images/13-Pantry-Freezer-Inventory-1.jpg","images/13-Pantry-Freezer-Inventory-2.jpg"],"14-Family-Budget-Pack":["images/14-Family-Budget-Pack-1.jpg","images/14-Family-Budget-Pack-2.jpg"],"15-Home-Maintenance-Records":["images/15-Home-Maintenance-Records-1.jpg","images/15-Home-Maintenance-Records-2.jpg"],"16-Family-Week-Planner":["images/16-Family-Week-Planner-1.jpg","images/16-Family-Week-Planner-2.jpg"],"17-Household-Information-Pages":["images/17-Household-Information-Pages-1.jpg","images/17-Household-Information-Pages-2.jpg"],"18-Cash-Envelope-System-Kit":["images/18-Cash-Envelope-System-Kit-1.jpg","images/18-Cash-Envelope-System-Kit-2.jpg"],"19-FREE-Cash-Envelope-Starter":["images/19-FREE-Cash-Envelope-Starter-1.jpg","images/19-FREE-Cash-Envelope-Starter-2.jpg"],"20-Debt-Payoff-Trackers":["images/20-Debt-Payoff-Trackers-1.jpg","images/20-Debt-Payoff-Trackers-2.jpg"],"21-Savings-Challenge-Pack":["images/21-Savings-Challenge-Pack-1.jpg","images/21-Savings-Challenge-Pack-2.jpg"],"22-Cash-Budget-Planner":["images/22-Cash-Budget-Planner-1.jpg","images/22-Cash-Budget-Planner-2.jpg"],"23-Cash-Envelope-Template-Set":["images/23-Cash-Envelope-Template-Set-1.jpg","images/23-Cash-Envelope-Template-Set-2.jpg"],"24-FREE-Hospital-Bag-Checklists":["images/24-FREE-Hospital-Bag-Checklists-1.jpg","images/24-FREE-Hospital-Bag-Checklists-2.jpg"],"25-Pregnancy-Journal-Tracker":["images/25-Pregnancy-Journal-Tracker-1.jpg","images/25-Pregnancy-Journal-Tracker-2.jpg"],"26-Baby-Milestone-Cards":["images/26-Baby-Milestone-Cards-1.jpg","images/26-Baby-Milestone-Cards-2.jpg"],"27-Newborn-Sleep-Feeding-Log":["images/27-Newborn-Sleep-Feeding-Log-1.jpg","images/27-Newborn-Sleep-Feeding-Log-2.jpg"],"28-Pregnancy-and-New-Baby-Kit":["images/28-Pregnancy-and-New-Baby-Kit-1.jpg","images/28-Pregnancy-and-New-Baby-Kit-2.jpg"]};   /* key -> [page1, page2] */
-const WAITLIST = 'mailto:linenlists@gmail.com?subject=Waitlist';
 
 /* ══ LIENS PAYHIP ═══════════════════════════════════════════════════════════
    La boutique : https://payhip.com/u17862069366221322633761
@@ -952,6 +951,15 @@ document.addEventListener('click', e => {
 document.addEventListener('keydown', e => { if(pvOpen && e.key === 'Escape') closePreview(); });
 pv.addEventListener('contextmenu', e => e.preventDefault());
 pv.addEventListener('dragstart', e => e.preventDefault());
+
+/* Le lien "liste d'attente" du pied de page mene au formulaire avec le
+   motif deja choisi : celle qui veut etre prevenue n'a pas a deviner
+   quelle ligne du menu la concerne. */
+document.querySelectorAll('a.waitlist').forEach(a =>
+  a.addEventListener('click', () => {
+    const sel = $('#cf-topic');
+    if(sel) sel.value = 'I want to know when the next kit lands';
+  }));
 
 /* ─────────── contact ───────────
    FormSubmit renvoie ici avec ?sent=1 une fois le message parti : on
