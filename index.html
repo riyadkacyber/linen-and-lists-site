@@ -89,7 +89,10 @@ nav{display:flex;gap:1.3rem}
 nav a{font-size:.82rem;text-decoration:none;color:var(--body);padding-bottom:2px;
   border-bottom:1px solid transparent}
 nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
-@media(max-width:1000px){nav{display:none}}
+/* Sous 1000 px la navigation disparait, sauf Contact : la majorite du
+   trafic vient du telephone, et une cliente bloquee doit pouvoir ecrire
+   sans avoir a chercher. */
+@media(max-width:1000px){nav a:not(.navcontact){display:none}}
 
 .btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:500;font-size:.86rem;
   padding:.8rem 1.4rem;border-radius:var(--r);text-decoration:none;cursor:pointer;
@@ -263,6 +266,28 @@ footer a:hover{color:#fff;border-bottom-color:#7A8085}
 .flinks{display:flex;flex-direction:column;gap:.45rem;font-size:.82rem}
 .fine{margin-top:2.1rem;padding-top:1.2rem;border-top:1px solid #2A2F34;font-size:.73rem;color:#868C93}
 
+/* -- contact ------------------------------------------------------------
+   Le site n'a pas de serveur : le formulaire est poste a FormSubmit, qui
+   le transfere par courriel. Rien n'est stocke ici, et aucune donnee ne
+   transite par une base.                                               */
+.form{max-width:640px}
+.form .row{margin-bottom:1.15rem}
+.form label{display:block;font-size:.74rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:.42rem}
+.form label .opt{font-weight:500;letter-spacing:.02em;text-transform:none}
+.form input,.form select,.form textarea{width:100%;font:inherit;font-size:.92rem;
+  color:var(--ink);background:var(--card);border:1px solid var(--rule2);
+  border-radius:var(--r);padding:.72rem .85rem;transition:border-color .18s}
+.form textarea{min-height:150px;resize:vertical}
+.form input:focus,.form select:focus,.form textarea:focus{outline:none;
+  border-color:var(--accent)}
+.form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.form .note{font-size:.8rem;color:var(--muted);margin:1rem 0 0;max-width:60ch}
+.sent{max-width:640px;background:var(--card);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);border-radius:var(--r);padding:1.5rem 1.7rem}
+.sent h3{margin:0 0 .5rem}
+.sent p{margin:0;font-size:.9rem;color:var(--body);max-width:56ch}
+
 .rv{opacity:0;transform:translateY(12px);transition:opacity .55s,transform .55s}
 .rv.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
@@ -332,6 +357,7 @@ h3{font-weight:700}
       <a href="#shop">Shop all</a>
       <a href="#free">Free</a>
       <a href="#faq">FAQ</a>
+      <a class="navcontact" href="#contact">Contact</a>
     </nav>
     <a class="btn sm ghost" href="#free">Free downloads</a>
   </div>
@@ -457,6 +483,78 @@ h3{font-weight:700}
   </div>
 </section>
 
+<!-- ═══════ 5. CONTACT ═══════
+     Poste a FormSubmit, qui renvoie ici avec ?sent=1. Les champs _ sont
+     ses reglages : sujet du courriel, mise en forme, page de retour, et
+     _honey, un champ invisible que seuls les robots remplissent. -->
+<section id="contact">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="eyebrow" style="color:var(--body)">Contact</p>
+      <h2>Something wrong with your file?</h2>
+      <p>Tell me what happened and I will fix it. I read every message myself and answer
+        within a day. If a file will not open or a page looks wrong, you do not need to
+        explain it well — just say what you see.</p>
+    </div>
+
+    <form class="form rv" id="contactform" method="POST"
+          action="https://formsubmit.co/linenlists@gmail.com">
+      <input type="hidden" name="_subject" value="Linen &amp; Lists — message from the site">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://linenandlists.pages.dev/?sent=1#contact">
+      <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <div class="row">
+        <label for="cf-name">Your name <span class="opt">— optional</span></label>
+        <input id="cf-name" type="text" name="Name" autocomplete="name">
+      </div>
+
+      <div class="row">
+        <label for="cf-email">Your email</label>
+        <input id="cf-email" type="email" name="Email" required autocomplete="email">
+      </div>
+
+      <div class="row">
+        <label for="cf-order">The email you used at checkout <span class="opt">— optional, it helps me find your order</span></label>
+        <input id="cf-order" type="email" name="Checkout email" autocomplete="off">
+      </div>
+
+      <div class="row">
+        <label for="cf-topic">What happened?</label>
+        <select id="cf-topic" name="What happened" required>
+          <option value="">Choose one</option>
+          <option>My download never arrived</option>
+          <option>The file will not open</option>
+          <option>The file will not print properly</option>
+          <option>A page is missing or looks wrong</option>
+          <option>I was charged twice</option>
+          <option>A question before I buy</option>
+          <option>Something else</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="cf-msg">Tell me more</label>
+        <textarea id="cf-msg" name="Message" required
+          placeholder="Which file, and what you see on screen."></textarea>
+      </div>
+
+      <button class="btn" type="submit">Send message</button>
+
+      <p class="note">Your email is used to answer you, nothing else. No list, no newsletter
+        unless you ask. You can also write to
+        <a href="mailto:linenlists@gmail.com">linenlists@gmail.com</a> directly.</p>
+    </form>
+
+    <div class="sent" id="sent" hidden>
+      <h3>Message sent.</h3>
+      <p>Thank you — I have it, and I will answer within a day at the address you gave.
+        If it is a broken file, tell your inbox to expect a new link from me.</p>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <div class="fgrid">
@@ -471,6 +569,7 @@ h3{font-weight:700}
       </div>
       <div class="flinks">
         <a href="#free">Free downloads</a>
+        <a href="#contact">Contact</a>
         <a href="mailto:linenlists@gmail.com?subject=Waitlist">Hear when the next kit lands</a>
         <a href="mailto:linenlists@gmail.com">linenlists@gmail.com</a>
       </div>
@@ -853,6 +952,16 @@ document.addEventListener('click', e => {
 document.addEventListener('keydown', e => { if(pvOpen && e.key === 'Escape') closePreview(); });
 pv.addEventListener('contextmenu', e => e.preventDefault());
 pv.addEventListener('dragstart', e => e.preventDefault());
+
+/* ─────────── contact ───────────
+   FormSubmit renvoie ici avec ?sent=1 une fois le message parti : on
+   remplace le formulaire par la confirmation, et on nettoie l'adresse
+   pour qu'un rechargement ne la reaffiche pas. */
+if(new URLSearchParams(location.search).has('sent')){
+  const cf = $('#contactform'), ok = $('#sent');
+  if(cf && ok){ cf.hidden = true; ok.hidden = false; ok.classList.add('in'); }
+  history.replaceState(null, '', location.pathname + '#contact');
+}
 
 /* ─────────── faq ─────────── */
 const FAQ = [
