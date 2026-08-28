@@ -283,7 +283,6 @@ footer a:hover{color:#fff;border-bottom-color:#7A8085}
 .paylist .mark{display:inline-flex;border-radius:4px;overflow:hidden;
   box-shadow:0 0 0 1px rgba(255,255,255,.14)}
 .paylist .mark svg{width:46px;height:29px;display:block}
-.paylist .plus{font-size:.72rem;color:#868C93;margin-left:.25rem}
 
 /* -- contact ------------------------------------------------------------
    Le site n'a pas de serveur : le formulaire est poste a FormSubmit, qui
@@ -1122,11 +1121,10 @@ if(new URLSearchParams(location.search).has('sent')){
    paiement et dans Account settings : PayPal et Stripe sont tous deux
    connectes, donc les cartes passent par Stripe et PayPal s'affiche a part.
 
-   American Express et Apple Pay attendent d'etre vus a l'ecran. Apple Pay
-   ne s'affiche que sur materiel Apple — un telephone Android montre Google
-   Pay a sa place — et son dessin est deja pret ci-dessous : il suffira de
-   l'ajouter a cette ligne. */
-const PAIEMENTS = ['Visa', 'Mastercard', 'Discover', 'PayPal', 'Google Pay'];
+   American Express n'est pas dans la rangee. Il est probablement accepte —
+   Stripe l'active par defaut — mais il n'a pas ete vu a l'ecran, et la
+   rangee ne dit que ce qui a ete constate. */
+const PAIEMENTS = ['Visa', 'Mastercard', 'Discover', 'Apple Pay', 'Google Pay', 'PayPal'];
 
 /* Les marques, en couleurs officielles, posees ici en dur : le site n'a
    aucune dependance exterieure et ce n'est pas un logo de carte qui va
@@ -1153,7 +1151,7 @@ $('#paylist').innerHTML = PAIEMENTS.map(m => MARQUES[m]
   ? '<span class="mark">'
     + '<svg viewBox="' + MARQUES[m][0] + '" role="img" aria-label="' + esc(m) + '">'
     + MARQUES[m][1] + '</svg></span>'
-  : '').join('') + '<span class="plus">and more at checkout</span>';
+  : '').join('');
 
 /* ─────────── faq ─────────── */
 const FAQ = [
