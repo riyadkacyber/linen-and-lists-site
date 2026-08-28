@@ -1,0 +1,6 @@
+# Tout est ouvert : la vitrine n'a rien a cacher, et les pages d'apercu
+# sont deja filigranees. Le plan du site est en dessous.
+User-agent: *
+Allow: /
+
+Sitemap: https://linenandlists.pages.dev/sitemap.xml

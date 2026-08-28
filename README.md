@@ -1,6 +1,7 @@
 # Linen &amp; Lists
 
-La vitrine de la boutique, publiee avec GitHub Pages.
+La vitrine de la boutique, servie par Cloudflare Pages
+sur https://linenandlists.pages.dev.
 
 **Ce depot est genere.** Ne pas l'editer a la main : le site est construit
 dans le depot de travail, puis recopie ici par `make-site-public.py`.

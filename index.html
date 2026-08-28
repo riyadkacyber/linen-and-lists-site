@@ -574,7 +574,6 @@ h3{font-weight:700}
         <a href="#free">Free downloads</a>
         <a href="#contact">Contact</a>
         <a class="waitlist" href="#contact">Hear when the next kit lands</a>
-        <a href="#contact">Contact</a>
       </div>
     </div>
     <p class="fine">Files are for personal use only — print as much as you like, please don't
@@ -996,6 +995,76 @@ $('#faqlist').addEventListener('click', e => {
   btn.setAttribute('aria-expanded', open ? 'false':'true');
   ans.style.maxHeight = open ? '0' : ans.scrollHeight+'px';
 });
+
+/* ─────────── donnees structurees ───────────
+   Ce que les moteurs de recherche lisent pour comprendre la page. Sans ce
+   bloc ils voient du texte ; avec, ils savent que ce sont trente produits,
+   ce que chacun coute et ou on l'achete. C'est ce qui permet a une fiche
+   de sortir dans une recherche avec son prix, plutot qu'un lien nu.
+
+   Rien n'est recopie ici : tout est construit a partir de SHOP, BUNDLES et
+   PAYHIP. Un prix change plus haut, ce bloc suit, et les deux ne peuvent
+   pas se contredire. */
+const SITE   = 'https://linenandlists.pages.dev/';
+const SHOPID = SITE + '#shop';
+const abs    = u => u ? SITE + String(u).replace(/^\//, '') : SITE;
+const slug   = n => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+/* Les gratuits n'ont pas de champ price : c'est un prix de zero, pas une
+   absence de prix, et il faut l'ecrire pour que le produit compte. */
+const offer = (price, url) => ({
+  '@type': 'Offer', url: url,
+  price: (price || 0).toFixed(2), priceCurrency: 'USD',
+  availability: 'https://schema.org/InStock', seller: {'@id': SHOPID},
+});
+
+/* Une paire de kits se vend sous le nom "<nom> Bundle" ; celui qui les
+   contient tous porte son propre nom, sur Payhip comme sur la page. Le
+   nom declare ici doit etre celui de la fiche, sinon les deux se
+   contredisent. */
+const NKITS = ALL.filter(p => p.status === 'kit').length;
+const bname = b => b.kits.length < NKITS ? b.name + ' Bundle' : b.name;
+
+const CATALOG = [
+  ...ALL.map(p => ({
+    '@type': 'Product', name: p.name, description: p.desc, category: p.cl,
+    image: abs(src(p.key, 0)), brand: {'@id': SHOPID},
+    offers: offer(p.price, link(code(p.key))),
+  })),
+  ...BUNDLES.map(b => ({
+    '@type': 'Product', name: bname(b), category: 'Bundles', brand: {'@id': SHOPID},
+    description: b.story + ' Includes ' + b.kits.join(', ') + '.',
+    image: abs('images/bundle-' + slug(b.name) + '-1.jpg'),
+    offers: offer(b.price, link(code('bundle:' + b.name))),
+  })),
+];
+
+const LD = {'@context': 'https://schema.org', '@graph': [
+  {'@type': 'Organization', '@id': SHOPID, name: 'Linen & Lists', url: SITE,
+   logo: abs('images/logo-linen-and-lists.png'), image: abs('images/share.jpg'),
+   description: $('meta[name="description"]').content, sameAs: [PAYHIP_STORE]},
+
+  {'@type': 'WebSite', '@id': SITE + '#site', url: SITE, name: 'Linen & Lists',
+   publisher: {'@id': SHOPID}},
+
+  {'@type': 'ItemList', name: 'Printable planners, binders and trackers',
+   numberOfItems: CATALOG.length,
+   itemListElement: CATALOG.map((it, i) => ({'@type': 'ListItem', position: i + 1, item: it}))},
+
+  /* Les memes questions que la section FAQ, mot pour mot : ce qui est
+     declare ici doit etre lisible sur la page, sinon c'est du remplissage
+     et les moteurs le sanctionnent. */
+  {'@type': 'FAQPage', '@id': SITE + '#faq',
+   mainEntity: FAQ.map(([q, a]) => ({'@type': 'Question', name: q,
+     acceptedAnswer: {'@type': 'Answer', text: a}}))},
+]};
+
+/* Ajoute apres coup plutot qu'ecrit dans le HTML : le catalogue n'existe
+   qu'une fois le script passe. */
+const ld = document.createElement('script');
+ld.type = 'application/ld+json';
+ld.textContent = JSON.stringify(LD);
+document.head.appendChild(ld);
 
 /* ─────────── reveal ─────────── */
 if('IntersectionObserver' in window){
