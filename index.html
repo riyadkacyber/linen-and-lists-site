@@ -273,7 +273,15 @@ footer .fmark{font-family:var(--serif);font-size:1.18rem;color:#fff;margin-botto
 footer a{color:#C7CBD0;text-decoration:none;border-bottom:1px solid transparent}
 footer a:hover{color:#fff;border-bottom-color:#7A8085}
 .flinks{display:flex;flex-direction:column;gap:.45rem;font-size:.82rem}
-.fine{margin-top:2.1rem;padding-top:1.2rem;border-top:1px solid #2A2F34;font-size:.73rem;color:#868C93}
+.fine{margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid #2A2F34;font-size:.73rem;color:#868C93}
+.pay{margin-top:2.1rem;padding-top:1.4rem;border-top:1px solid #2A2F34}
+.paytitle{font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:#868C93;margin:0 0 .75rem}
+.paylist{display:flex;flex-wrap:wrap;gap:.42rem;margin-bottom:.75rem}
+.paylist span{font-size:.72rem;font-weight:600;color:#C7CBD0;background:#22272B;
+  border:1px solid #343A40;border-radius:3px;padding:.34rem .62rem}
+.paylist span.plus{font-weight:400;color:#868C93;background:none;border-color:#2A2F34}
+.paynote{font-size:.73rem;color:#868C93;margin:0;max-width:52ch}
 
 /* -- contact ------------------------------------------------------------
    Le site n'a pas de serveur : le formulaire est poste a FormSubmit, qui
@@ -692,6 +700,15 @@ h3{font-weight:700}
         <a class="waitlist" href="#contact">Hear when the next kit lands</a>
       </div>
     </div>
+    <!-- Ce que la caisse accepte. La liste vit dans le script, objet
+         PAIEMENTS : un seul endroit a corriger. -->
+    <div class="pay">
+      <p class="paytitle">Secure checkout</p>
+      <div class="paylist" id="paylist"></div>
+      <p class="paynote">Checkout is handled by Payhip. Your card details are entered on
+        their payment page and never touch this site.</p>
+    </div>
+
     <p class="fine">Files are for personal use only — print as much as you like, please don't
       resell or share them. Digital downloads are not refundable, but email me if a file won't
       open and I'll fix it. Nothing in the money kits is financial advice, and nothing in the
@@ -1090,6 +1107,21 @@ if(new URLSearchParams(location.search).has('sent')){
   if(cf && ok){ cf.hidden = true; ok.hidden = false; ok.classList.add('in'); }
   history.replaceState(null, '', location.pathname + '#contact');
 }
+
+/* ─────────── moyens de paiement ───────────
+   Ce que la caisse Payhip accepte VRAIMENT, a verifier dans Payhip sous
+   Settings > Payment gateways avant d'ecrire quoi que ce soit ici. Une
+   cliente qui vient pour un logo affiche et ne le trouve pas au paiement,
+   c'est une vente perdue au dernier ecran — l'inverse exact du but.
+
+   Les cartes passent par tous les gateways. PayPal n'apparait que s'il est
+   connecte ; Apple Pay et Google Pay demandent Stripe. La derniere entree
+   reste vraie quoi qu'il arrive : la caisse en propose d'autres selon le
+   pays de la visiteuse. */
+const PAIEMENTS = ['Visa', 'Mastercard', 'American Express'];
+
+$('#paylist').innerHTML = PAIEMENTS.map(m => '<span>' + esc(m) + '</span>').join('')
+  + '<span class="plus">and more at checkout</span>';
 
 /* ─────────── faq ─────────── */
 const FAQ = [
