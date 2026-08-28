@@ -181,6 +181,9 @@ nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
   padding:1.4rem 1.35rem;display:flex;flex-direction:column;position:relative;
   transition:transform .2s,box-shadow .2s}
 .bundle:hover{transform:translateY(-3px);box-shadow:0 16px 32px -22px rgba(20,24,28,.26)}
+/* Atteinte par son adresse, une carte doit se poser sous l'en-tete colle,
+   pas dessous lui. */
+.bundle{scroll-margin-top:80px}
 .bundle.best{background:var(--spine);border-color:var(--spine);color:#D8DCE0}
 .bundle.best h3{color:#fff}
 .bundle.best .story,.bundle.best li{color:#BFC4C9}
@@ -776,6 +779,8 @@ const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const ALL = SHOP.flatMap(c => c.products.map(p => ({...p, cl:c.name, c:c.color, cid:c.id})));
 const find = n => ALL.find(p => p.name === n) || {};
 const src = (k,i) => (PAGES[k] && PAGES[k][i]) ? PAGES[k][i] : '';
+/* Le nom d'un bundle en identifiant d'adresse : The Whole Shelf -> the-whole-shelf */
+const slug = n => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 /* Lien d'achat : on envoie le visiteur sur la PAGE du produit sur Payhip,
    pas directement au paiement, pour qu'il puisse regarder avant d'acheter.
@@ -830,7 +835,7 @@ $('#bundlegrid').innerHTML = BUNDLES.map(b => {
   const per = (b.price / b.kits.length).toFixed(2).replace(/\.00$/,'');
   const minis = b.kits.map(k =>
     '<img loading="lazy" src="'+src(find(k).key,0)+'" alt="Cover of '+esc(k)+'">').join('');
-  return '<article class="bundle'+(b.best?' best':'')+'">'
+  return '<article class="bundle'+(b.best?' best':'')+'" id="bundle-'+slug(b.name)+'">'
    + (b.best ? '<span class="flag">Best value</span>' : '')
    + '<div class="minis">'+minis+'</div>'
    + '<h3>'+esc(b.name)+'</h3><p class="story">'+esc(b.story)+'</p>'
@@ -915,6 +920,10 @@ document.addEventListener('click', e => {
    reste possible - ca, aucun site ne l'empeche. */
 const pv = $('#pv'), pvPages = $('#pvpages');
 let pvOpen = false;
+/* La carte a rejoindre quand la visionneuse se refermera. Remplie par
+   les liens profonds, plus bas : arrivee droit sur un produit, la page
+   derriere est restee en haut. */
+let carteEnAttente = '';
 
 function openPreview(key){
   const p = ALL.find(x => x.key === key);
@@ -944,6 +953,7 @@ function closePreview(){
   pvOpen = false;
   pvPages.innerHTML = '';
   document.body.style.overflow = '';
+  if(carteEnAttente){ rejoinsCarte(carteEnAttente); carteEnAttente = ''; }
 }
 document.addEventListener('click', e => {
   const t = e.target.closest('.seeprev');
@@ -996,6 +1006,52 @@ $('#faqlist').addEventListener('click', e => {
   ans.style.maxHeight = open ? '0' : ans.scrollHeight+'px';
 });
 
+/* ─────────── liens profonds ───────────
+   Une adresse par produit : linenandlists.pages.dev/#02-Wedding-Budget-Planner
+   mene a ce produit-la, pas a la page en general. La carte est amenee au
+   milieu de l'ecran et sa visionneuse s'ouvre : quelqu'un qui arrive d'une
+   epingle Pinterest voit tout de suite les pages qu'il venait voir, et le
+   bouton d'achat a cote. Refermer la visionneuse le laisse sur la carte.
+
+   Les bundles n'ont pas de pages d'apercu : leur carte porte simplement son
+   identifiant, #bundle-just-engaged, et le navigateur y va tout seul.
+
+   Les ancres de section — #kits, #free, #contact — ne sont des cles de
+   produit pour personne : elles ne passent pas le test ci-dessous, et le
+   navigateur continue de s'en occuper comme avant. */
+const cleDeLAdresse = () => {
+  const cle = decodeURIComponent(location.hash.slice(1));
+  return PREVIEW_PAGES[cle] ? cle : '';
+};
+
+/* La carte du produit, amenee au milieu de l'ecran. Elle apparait d'ordinaire
+   en fondu quand on arrive dessus ; ici on y saute, donc elle doit etre
+   visible avant, pas apres. */
+function rejoinsCarte(cle){
+  const bouton = document.querySelector('.seeprev[data-key="' + cle + '"]');
+  const carte = bouton && bouton.closest('article');
+  if(!carte) return;
+  carte.classList.add('in');
+  carte.scrollIntoView({block:'center', behavior:'auto'});
+}
+
+/* On ouvre la visionneuse sans toucher au defilement : deplacer la page sous
+   une visionneuse deja ouverte la laisse au mauvais endroit derriere elle.
+   Le voyage jusqu'a la carte attend donc la fermeture. */
+function montreProduit(cle){
+  carteEnAttente = cle;
+  openPreview(cle);
+}
+
+const cleInitiale = cleDeLAdresse();
+if(cleInitiale) montreProduit(cleInitiale);
+
+window.addEventListener('hashchange', () => {
+  const cle = cleDeLAdresse();
+  if(cle) montreProduit(cle);
+  else if(pvOpen) closePreview();
+});
+
 /* ─────────── donnees structurees ───────────
    Ce que les moteurs de recherche lisent pour comprendre la page. Sans ce
    bloc ils voient du texte ; avec, ils savent que ce sont trente produits,
@@ -1008,7 +1064,6 @@ $('#faqlist').addEventListener('click', e => {
 const SITE   = 'https://linenandlists.pages.dev/';
 const SHOPID = SITE + '#shop';
 const abs    = u => u ? SITE + String(u).replace(/^\//, '') : SITE;
-const slug   = n => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 /* Les gratuits n'ont pas de champ price : c'est un prix de zero, pas une
    absence de prix, et il faut l'ecrire pour que le produit compte. */
