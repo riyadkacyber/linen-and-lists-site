@@ -353,6 +353,51 @@ h3{font-weight:700}
 .pvnote{flex:none;margin:0;padding:.6rem 1rem;text-align:center;
   font-size:.68rem;color:#9AA1A8;background:#0F1113;
   border-top:1px solid rgba(255,255,255,.14)}
+/* ══ TENIR SUR TOUS LES ECRANS ═══════════════════════════════════════════
+   Sous 380 px — un iPhone SE, un Android d'entree de gamme, ou n'importe
+   quel telephone dont la police systeme est agrandie — la marque, Contact
+   et le bouton ne tenaient plus sur la ligne : la page se decalait de 27 px
+   vers la droite et se faisait glisser lateralement. On resserre plutot que
+   de cacher : le bouton des gratuits est ce qui fait entrer les gens. */
+/* Le bouton de l'en-tete garde sa ligne : comprime, il coupait "Free
+   downloads" en deux dans une barre haute de 60 px. */
+.bar .btn.sm{flex:none;white-space:nowrap}
+
+@media(max-width:380px){
+  .bar{gap:.6rem}
+  .mark{font-size:.96rem}
+  .bar .btn.sm{padding:.62rem .7rem;font-size:.72rem}
+  .wrap{padding:0 14px}
+}
+
+/* Un cran de plus sur les plus petits ecrans encore vendus : a 320 px, la
+   marque, Contact et le bouton tiennent a 9 px pres. On resserre les
+   gouttieres plutot que de retirer quelque chose de la barre. */
+@media(max-width:340px){
+  .bar{gap:.45rem}
+  .wrap{padding:0 10px}
+  .bar .btn.sm{padding:.62rem .6rem;font-size:.7rem}
+}
+
+/* Sur un ecran tactile, le doigt ne vise pas au pixel. Les zones de moins
+   de 40 px sont agrandies sans rien deplacer : la marge negative annule le
+   remplissage, et le trace reste exactement ou il etait.
+
+   Deux conditions plutot qu'une : le pointeur grossier vise les telephones
+   et les tablettes de toute taille, la largeur vise les fenetres etroites
+   sur ordinateur — et c'est celle qui se verifie en test. */
+@media(pointer:coarse), (max-width:834px){
+  nav a{padding:.6rem 0;margin:-.6rem 0}
+  .seeprev{padding:.7rem 0;margin:-.7rem 0}
+  .tab{padding:.72rem 1rem}
+  /* Les pastilles 1 et 2 grandissent pour de bon. Une zone invisible autour
+     d'elles aurait garde le dessin intact, mais elle se fait manger par ce
+     qui vient apres dans la carte : essaye, verifie, abandonnee.
+     Rater la pastille n'a rien de grave — l'image elle-meme tourne la page,
+     et elle fait 300 px de large. */
+  .dots button{width:32px;height:26px;font-size:.72rem}
+}
+
 </style>
 </head>
 <body>
