@@ -373,6 +373,38 @@ h3{font-weight:700}
 /* Un cran de plus sur les plus petits ecrans encore vendus : a 320 px, la
    marque, Contact et le bouton tiennent a 9 px pres. On resserre les
    gouttieres plutot que de retirer quelque chose de la barre. */
+/* ══ DEUX PRODUITS PAR LIGNE SUR TELEPHONE ═══════════════════════════════
+   Une seule colonne donnait une page interminable : vingt-six cartes a la
+   file, et il fallait defiler longtemps avant de soupconner l'etendue du
+   catalogue. A deux, on en voit quatre d'un coup d'oeil — c'est ce que font
+   toutes les boutiques que la visiteuse connait deja.
+
+   La carte se resserre en consequence : moins de remplissage, titre et prix
+   plus petits, et le texte de presentation coupe a trois lignes plutot que
+   d'etirer la carte.
+
+   Les quatre kits gardent leur pleine largeur. Ils portent une liste de
+   points et un renvoi vers le gratuit de leur collection, qui ne tiennent
+   pas dans 170 px — et ce sont les meilleures marges de la boutique. */
+@media(max-width:640px){
+  .grid{grid-template-columns:repeat(2,1fr);gap:.7rem}
+  .gal{padding:8px 8px 0}
+  .pbody{padding:.7rem .75rem}
+  .pbody h3{font-size:.86rem;line-height:1.25}
+  .pbody p{font-size:.74rem;line-height:1.4;margin-bottom:.55rem;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .pbody .amt{font-size:1.05rem}
+  .pbody .foot{gap:.4rem}
+  .pbody .btn.sm{padding:.5rem .68rem;font-size:.72rem}
+  /* En haut a droite, le nombre de pages venait recouvrir l'etiquette
+     "COMPLETE KIT" : 155 px de large ne portent pas les deux. Il reste donc
+     en bas, et ce sont les pastilles qui cedent quelques pixels — rater une
+     pastille reste sans consequence, l'image tourne la page elle aussi. */
+  .pgno{font-size:.55rem;right:.45rem;bottom:2.35rem;padding:.14rem .34rem}
+  .dots{left:.45rem;bottom:.45rem;gap:.28rem}
+  .dots button{width:28px;height:24px}
+}
+
 @media(max-width:340px){
   .bar{gap:.45rem}
   .wrap{padding:0 10px}
