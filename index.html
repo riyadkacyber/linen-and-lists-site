@@ -403,6 +403,36 @@ h3{font-weight:700}
   .pgno{font-size:.55rem;right:.45rem;bottom:2.35rem;padding:.14rem .34rem}
   .dots{left:.45rem;bottom:.45rem;gap:.28rem}
   .dots button{width:28px;height:24px}
+
+  /* Les quatre kits suivent le meme rang. Leur carte porte davantage : une
+     liste de points et un renvoi vers le gratuit de la collection. Les
+     points restent — c'est ce qui donne envie — mais en plus petit, et le
+     renvoi vers le gratuit s'efface : la section des gratuits existe deja,
+     juste en dessous, et ces quatre lignes doublaient la hauteur. */
+  .kits{grid-template-columns:repeat(2,1fr);gap:.7rem}
+  .kbody{padding:.7rem .75rem .8rem}
+  .kbody h3{font-size:.9rem;line-height:1.25;margin-bottom:.4rem}
+  .kbody ul{font-size:.72rem;margin-bottom:.7rem}
+  .kbody li{padding-left:.8rem;margin-bottom:.26rem;line-height:1.35}
+  .kbody li::before{width:4px;height:4px}
+  .kprice .n{font-size:1.3rem}
+  .kprice .u{font-size:.62rem}
+  .tryfree{display:none}
+  .kfoot .btn.wide{padding:.62rem .8rem;font-size:.76rem}
+
+  /* Les bundles aussi. La ligne de prix se scinde — le prix barre reste
+     avec le prix, l'economie passe dessous — et c'est plus lisible ainsi
+     que serre sur une ligne. */
+  .bundles{grid-template-columns:repeat(2,1fr);gap:.7rem}
+  .bundle{padding:.8rem .75rem}
+  .bundle h3{font-size:.95rem}
+  .bundle .story{font-size:.74rem}
+  .bundle ul{font-size:.72rem}
+  .bundle li{margin-bottom:.3rem;line-height:1.35}
+  .now{font-size:1.3rem}
+  .perkit{font-size:.68rem}
+  .bundle .btn.wide{padding:.62rem .7rem;font-size:.76rem}
+  .flag{font-size:.5rem}
 }
 
 @media(max-width:340px){
