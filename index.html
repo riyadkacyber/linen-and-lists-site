@@ -222,6 +222,12 @@ nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 .tab[aria-selected="true"]{background:var(--spine);border-color:var(--spine);color:#F4F5F6}
 .tab .n{opacity:.55;font-weight:400;margin-left:.35rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:1.1rem}
+/* La carte atteinte par un lien profond se signale, puis se tait. La couleur
+   est celle de sa collection, posee sur la carte par le script. */
+@keyframes repere{from{box-shadow:0 0 0 3px var(--accent)}to{box-shadow:0 0 0 3px transparent}}
+.repere{animation:repere 2.8s ease-out 1}
+@media(prefers-reduced-motion:reduce){.repere{animation:none;box-shadow:0 0 0 3px var(--accent)}}
+
 .prod{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);
   overflow:hidden;display:flex;flex-direction:column;
   transition:transform .2s,box-shadow .2s}
@@ -920,10 +926,6 @@ document.addEventListener('click', e => {
    reste possible - ca, aucun site ne l'empeche. */
 const pv = $('#pv'), pvPages = $('#pvpages');
 let pvOpen = false;
-/* La carte a rejoindre quand la visionneuse se refermera. Remplie par
-   les liens profonds, plus bas : arrivee droit sur un produit, la page
-   derriere est restee en haut. */
-let carteEnAttente = '';
 
 function openPreview(key){
   const p = ALL.find(x => x.key === key);
@@ -953,7 +955,6 @@ function closePreview(){
   pvOpen = false;
   pvPages.innerHTML = '';
   document.body.style.overflow = '';
-  if(carteEnAttente){ rejoinsCarte(carteEnAttente); carteEnAttente = ''; }
 }
 document.addEventListener('click', e => {
   const t = e.target.closest('.seeprev');
@@ -1008,13 +1009,14 @@ $('#faqlist').addEventListener('click', e => {
 
 /* ─────────── liens profonds ───────────
    Une adresse par produit : linenandlists.pages.dev/#02-Wedding-Budget-Planner
-   mene a ce produit-la, pas a la page en general. La carte est amenee au
-   milieu de l'ecran et sa visionneuse s'ouvre : quelqu'un qui arrive d'une
-   epingle Pinterest voit tout de suite les pages qu'il venait voir, et le
-   bouton d'achat a cote. Refermer la visionneuse le laisse sur la carte.
+   mene a la carte de ce produit, au milieu du catalogue.
 
-   Les bundles n'ont pas de pages d'apercu : leur carte porte simplement son
-   identifiant, #bundle-just-engaged, et le navigateur y va tout seul.
+   Au milieu, et pas seule a l'ecran : quelqu'un qui arrive d'une epingle
+   Pinterest ne vient chercher qu'une chose, mais voit ses voisines en
+   arrivant, et le panier grossit. C'est aussi pour ca qu'on ne lui ouvre
+   pas la visionneuse d'office — elle reste a un clic, sur la carte.
+
+   La carte se signale un instant, le temps d'etre reperee parmi les autres.
 
    Les ancres de section — #kits, #free, #contact — ne sont des cles de
    produit pour personne : elles ne passent pas le test ci-dessous, et le
@@ -1024,32 +1026,30 @@ const cleDeLAdresse = () => {
   return PREVIEW_PAGES[cle] ? cle : '';
 };
 
-/* La carte du produit, amenee au milieu de l'ecran. Elle apparait d'ordinaire
-   en fondu quand on arrive dessus ; ici on y saute, donc elle doit etre
-   visible avant, pas apres. */
 function rejoinsCarte(cle){
+  /* La premiere carte trouvee : celle d'un kit est dans la rangee des
+     quatre kits, celle d'un module dans le catalogue. Dans les deux cas,
+     entouree de ce qui se vend a cote. */
   const bouton = document.querySelector('.seeprev[data-key="' + cle + '"]');
   const carte = bouton && bouton.closest('article');
   if(!carte) return;
-  carte.classList.add('in');
+  /* Les sections apparaissent en fondu quand on arrive dessus. Ici on y
+     saute : la rangee doit etre visible avant, pas apres. */
+  const bloc = carte.closest('.rv');
+  if(bloc) bloc.classList.add('in');
   carte.scrollIntoView({block:'center', behavior:'auto'});
-}
-
-/* On ouvre la visionneuse sans toucher au defilement : deplacer la page sous
-   une visionneuse deja ouverte la laisse au mauvais endroit derriere elle.
-   Le voyage jusqu'a la carte attend donc la fermeture. */
-function montreProduit(cle){
-  carteEnAttente = cle;
-  openPreview(cle);
+  carte.classList.add('repere');
 }
 
 const cleInitiale = cleDeLAdresse();
-if(cleInitiale) montreProduit(cleInitiale);
+if(cleInitiale) rejoinsCarte(cleInitiale);
 
 window.addEventListener('hashchange', () => {
   const cle = cleDeLAdresse();
-  if(cle) montreProduit(cle);
-  else if(pvOpen) closePreview();
+  if(cle){
+    document.querySelectorAll('.repere').forEach(el => el.classList.remove('repere'));
+    rejoinsCarte(cle);
+  }
 });
 
 /* ─────────── donnees structurees ───────────
