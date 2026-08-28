@@ -193,10 +193,35 @@ nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 .bundle.best .minis img{border-color:#3A4046}
 .flag{position:absolute;top:-9px;left:1.35rem;font-size:.6rem;font-weight:700;letter-spacing:.13em;
   text-transform:uppercase;background:var(--gold);color:#fff;padding:.22rem .6rem;border-radius:var(--r)}
-.minis{display:flex;gap:.4rem;margin-bottom:1rem}
-.minis img{flex:1 1 0;min-width:0;width:100%;height:104px;object-fit:cover;
-  object-position:top center;border:1px solid var(--rule2);border-radius:2px;
-  box-shadow:0 3px 9px -5px rgba(20,24,28,.35)}
+/* Les couvertures des kits contenus defilent lateralement au lieu de se
+   partager la largeur. A quatre, chacune tombait sous cinquante pixels et
+   on ne distinguait plus rien : desormais elles gardent leur taille, et
+   c'est la bande qui glisse. Elle ne defile que lorsqu'il y a de quoi —
+   deux couvertures tiennent souvent sans deborder.
+
+   Le recadrage disparait aussi : la boite est au rapport exact des
+   couvertures, on voit la page entiere. */
+/* Sans min-width:0, une carte de grille refuse de descendre sous la largeur
+   de son contenu : les couvertures non retrecissables elargissaient la
+   carte, la carte elargissait la grille, et la page se decalait de 400 px
+   sur telephone. C'est la boite qui doit ceder, pas la page. */
+.bundle{min-width:0}
+.minis{min-width:0;display:flex;gap:.45rem;margin-bottom:1rem;overflow-x:auto;
+  scroll-snap-type:x proximity;padding-bottom:.5rem;
+  overscroll-behavior-x:contain;scrollbar-width:thin;
+  scrollbar-color:var(--rule2) transparent}
+.minis::-webkit-scrollbar{height:6px}
+.minis::-webkit-scrollbar-track{background:transparent}
+.minis::-webkit-scrollbar-thumb{background:var(--rule2);border-radius:3px}
+.minis img{flex:none;width:108px;height:140px;scroll-snap-align:start;
+  object-fit:cover;object-position:top center;border:1px solid var(--rule2);
+  border-radius:2px;box-shadow:0 3px 9px -5px rgba(20,24,28,.35)}
+.bundle.best .minis{scrollbar-color:#4A5057 transparent}
+.bundle.best .minis::-webkit-scrollbar-thumb{background:#4A5057}
+/* Les cartes de bundle ne portent pas de couleur de collection : le lien
+   d'apercu prend celle du site, et s'eclaircit sur la carte sombre. */
+.bundle .seeprev{color:var(--accent);margin-bottom:.7rem}
+.bundle.best .seeprev{color:#C9CFD5}
 .bundle h3{margin-bottom:.35rem}
 .story{font-size:.84rem;margin-bottom:.85rem}
 .bundle ul{list-style:none;margin:0 0 1.1rem;padding:0;font-size:.82rem}
@@ -980,6 +1005,7 @@ $('#bundlegrid').innerHTML = BUNDLES.map(b => {
    + '<span class="was">$'+was+'</span>'
    + (save>0?'<span class="save">Save $'+save+'</span>':'')+'</div>'
    + '<p class="perkit">$'+per+' a kit · '+b.kits.length+' complete kits</p>'
+   + '<button class="seeprev" type="button" data-bundle="'+esc(b.name)+'">'+EYE+'See preview</button>'
    + buy(code('bundle:' + b.name), 'btn wide', 'Get this bundle')+'</div></article>';
 }).join('');
 
@@ -1057,29 +1083,69 @@ document.addEventListener('click', e => {
 const pv = $('#pv'), pvPages = $('#pvpages');
 let pvOpen = false;
 
-function openPreview(key){
-  const p = ALL.find(x => x.key === key);
-  const meta = PREVIEW_PAGES[key];
-  if(!p || !meta) return;
-  const n = meta[0], w = meta[1], h = meta[2];
-  $('#pvname').textContent = p.name;
-  $('#pvmeta').textContent = n + (n > 1 ? ' preview pages' : ' preview page')
-    + ' \u00b7 ' + p.pages + ' in the file';
+/* La visionneuse sert deux choses : un produit, et un bundle. On lui donne
+   un titre, une ligne de detail, un bouton et une liste de pages ; elle ne
+   sait pas d'ou elles viennent. */
+function ouvreVisionneuse(nom, detail, lien, libelle, pages){
+  $('#pvname').textContent = nom;
+  $('#pvmeta').textContent = detail;
   const b = $('#pvbuy');
-  b.href = link(code(key));
-  b.textContent = p.status === 'free' ? 'Download free' : 'Get it \u2014 $' + p.price;
-  pvPages.innerHTML = Array.from({length:n}, (_,i) =>
-    '<figure class="pvpage"><img src="previews/' + key + '-p' + (i+1) + '.jpg"'
-    + ' alt="Preview page ' + (i+1) + ' of ' + esc(p.name) + '" loading="lazy"'
-    + ' width="' + w + '" height="' + h + '" draggable="false">'
+  b.href = lien;
+  b.textContent = libelle;
+  pvPages.innerHTML = pages.map((pg, i) =>
+    '<figure class="pvpage"><img src="' + pg.src + '"'
+    + ' alt="' + esc(pg.alt) + '" loading="lazy"'
+    + ' width="' + pg.w + '" height="' + pg.h + '" draggable="false">'
     + '<span class="pvshield"></span>'
-    + '<span class="pvn">' + (i+1) + ' / ' + n + '</span></figure>').join('');
+    + '<span class="pvn">' + (i + 1) + ' / ' + pages.length + '</span></figure>').join('');
   pvPages.scrollTop = 0;
   pv.hidden = false;
   pvOpen = true;
   document.body.style.overflow = 'hidden';
   $('#pvclose').focus();
 }
+
+/* Les pages d'apercu d'un produit, dans l'ordre. */
+function pagesDe(cle){
+  const meta = PREVIEW_PAGES[cle];
+  if(!meta) return [];
+  const p = ALL.find(x => x.key === cle) || {};
+  const n = meta[0], w = meta[1], h = meta[2];
+  return Array.from({length:n}, (_, i) => ({
+    src: 'previews/' + cle + '-p' + (i + 1) + '.jpg',
+    alt: 'Preview page ' + (i + 1) + ' of ' + p.name, w: w, h: h}));
+}
+
+function openPreview(cle){
+  const p = ALL.find(x => x.key === cle);
+  const pages = pagesDe(cle);
+  if(!p || !pages.length) return;
+  ouvreVisionneuse(p.name,
+    pages.length + (pages.length > 1 ? ' preview pages' : ' preview page')
+      + ' \u00b7 ' + p.pages + ' in the file',
+    link(code(cle)),
+    p.status === 'free' ? 'Download free' : 'Get it \u2014 $' + p.price,
+    pages);
+}
+
+/* Un bundle n'a pas d'apercu a lui : le sien est la suite de ceux des kits
+   qu'il contient, dans l'ordre ou la carte les annonce. C'est aussi ce
+   qu'on achete — voir dix pages plutot que cinq, c'est voir ce que
+   l'ensemble vaut. */
+function ouvreApercuBundle(nom){
+  const b = BUNDLES.find(x => x.name === nom);
+  if(!b) return;
+  const pages = b.kits.reduce((tout, k) => tout.concat(pagesDe((find(k) || {}).key)), []);
+  if(!pages.length) return;
+  const feuillets = b.kits.reduce((n, k) => n + (parseInt(find(k).pages, 10) || 0), 0);
+  const tableurs = b.kits.length + (b.kits.length > 1 ? ' spreadsheets' : ' spreadsheet');
+  ouvreVisionneuse(b.name,
+    pages.length + ' preview pages \u00b7 ' + feuillets + ' pages + ' + tableurs + ' in the bundle',
+    link(code('bundle:' + b.name)),
+    'Get it \u2014 $' + b.price,
+    pages);
+}
+
 function closePreview(){
   pv.hidden = true;
   pvOpen = false;
@@ -1088,7 +1154,7 @@ function closePreview(){
 }
 document.addEventListener('click', e => {
   const t = e.target.closest('.seeprev');
-  if(t){ openPreview(t.dataset.key); return; }
+  if(t){ t.dataset.bundle ? ouvreApercuBundle(t.dataset.bundle) : openPreview(t.dataset.key); return; }
   if(pvOpen && (e.target === pv || e.target.closest('#pvclose'))) closePreview();
 });
 document.addEventListener('keydown', e => { if(pvOpen && e.key === 'Escape') closePreview(); });
