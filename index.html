@@ -378,6 +378,13 @@ h3{font-weight:700}
 .kfoot .seeprev{margin-bottom:.6rem}
 .pbody .pend{margin-top:auto}
 .pbody .pend .seeprev{margin-bottom:.55rem}
+.inkit{font-size:.74rem;line-height:1.5;color:var(--muted);margin:.6rem 0 0}
+.inkit a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+.inkit a:hover,.inkit a:focus-visible{border-bottom-color:currentColor}
+.cartline{font-size:.84rem;color:var(--muted);text-align:center;margin:1.6rem 0 0}
+.cartline a{color:var(--accent);font-weight:500;text-decoration:none;
+  border-bottom:1px solid transparent}
+.cartline a:hover,.cartline a:focus-visible{border-bottom-color:currentColor}
 .pbody .pend .foot{margin-top:0}
 .prod.freebie .seeprev{color:#fff}
 
@@ -628,6 +635,9 @@ h3{font-weight:700}
     </div>
     <div class="tabs rv" role="tablist" aria-label="Filter products" id="tabs"></div>
     <div class="grid rv" id="prodgrid"></div>
+    <p class="cartline rv">Taking more than one section?
+      <a id="storelink" data-test-id="store-cart" href="#" target="_blank" rel="noopener">Add
+      them up in the shop</a> — one cart, one checkout, one email.</p>
   </div>
 </section>
 
@@ -1059,6 +1069,12 @@ $('#bundlegrid').innerHTML = BUNDLES.map(b => {
 function card(p){
   const free = p.status === 'free';
   const kit  = p.status === 'kit';
+  /* Le kit de la collection contient ce module. Des le troisieme module
+     achete, il revient moins cher que les modules pris un par un — c'est
+     vrai dans les quatre collections. Sans cette ligne, celle qui en veut
+     plusieurs paie plus pour recevoir moins, et rien ne le lui dit. */
+  const complet = p.status === 'module'
+                  && ALL.find(x => x.cid === p.cid && x.status === 'kit');
   const amt = free ? '<span class="amt">Free</span>'
             : '<span class="amt">$'+p.price+(kit?'<small>complete kit</small>':'')+'</span>';
   const tag = kit ? 'Complete kit' : free ? 'Free' : '';
@@ -1066,11 +1082,17 @@ function card(p){
    + gallery(p, tag, free)
    + '<div class="pbody"><p class="cl">'+esc(p.cl)+'</p>'
    + '<h3>'+esc(p.name)+'</h3><p>'+esc(p.desc)+'</p>'
+   + (complet ? '<p class="inkit">Also in the <a href="#'+complet.key+'">'
+                + esc(complet.name)+'</a> — '+esc(complet.pages)+', $'+complet.price+'.</p>' : '')
    + '<div class="pend">'+seeprev(p.key)+'<div class="foot">'+amt
    + buy(code(p.key), 'btn sm', free?'Download':'Buy', p.key)+'</div></div></div></article>';
 }
 
 /* ─────────── tabs ─────────── */
+/* La boutique Payhip a un panier ; les fiches produit, elles, mènent a un
+   seul achat. Qui en veut plusieurs passe par la, et ne paie qu'une fois. */
+$('#storelink').href = PAYHIP_STORE;
+
 const tabs = $('#tabs'), pgrid = $('#prodgrid');
 const FILTERS = [{label:'Everything', ids:SHOP.map(c=>c.id)},
                  ...SHOP.map(c => ({label:c.name, ids:[c.id]}))];
