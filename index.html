@@ -58,7 +58,7 @@
   --accent:#5F7A52; --accent-dark:#4A6140;
   --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
   --serif:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --wrap:1180px; --gut:clamp(18px,4.5vw,44px); --r:3px;
+  --wrap:1400px; --gut:clamp(18px,4.5vw,44px); --r:3px;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -154,7 +154,7 @@ nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 .dots button:hover{border-color:var(--c)}
 
 /* ── featured kits (first section) ── */
-.kits{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1.1rem}
+.kits{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem}
 .kit{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);
   overflow:hidden;display:flex;flex-direction:column;
   transition:transform .2s,box-shadow .2s}
@@ -176,7 +176,7 @@ nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 .tryfree a:hover{border-bottom-color:currentColor}
 
 /* bundles */
-.bundles{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1rem}
+.bundles{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
 .bundle{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);
   padding:1.4rem 1.35rem;display:flex;flex-direction:column;position:relative;
   transition:transform .2s,box-shadow .2s}
@@ -257,7 +257,13 @@ nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
 .tab:hover{border-color:var(--ink);color:var(--ink)}
 .tab[aria-selected="true"]{background:var(--spine);border-color:var(--spine);color:#F4F5F6}
 .tab .n{opacity:.55;font-weight:400;margin-left:.35rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:1.1rem}
+/* ══ QUATRE PAR LIGNE, ET LA LARGEUR VA AUX IMAGES ══════════════════════
+   Le nombre de colonnes est fixe a chaque taille d'ecran, au lieu d'etre
+   deduit d'une largeur minimale. La difference se voit sur grand ecran :
+   avec auto-fill, elargir la page ajoutait une cinquieme colonne et les
+   cartes restaient petites ; ici la place gagnee va aux cartes, donc aux
+   images des produits, qui sont ce qu'on vient regarder. */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem}
 /* La carte atteinte par un lien profond se signale, puis se tait. La couleur
    est celle de sa collection, posee sur la carte par le script. */
 @keyframes repere{from{box-shadow:0 0 0 3px var(--accent)}to{box-shadow:0 0 0 3px transparent}}
@@ -418,6 +424,14 @@ h3{font-weight:700}
 /* Un cran de plus sur les plus petits ecrans encore vendus : a 320 px, la
    marque, Contact et le bouton tiennent a 9 px pres. On resserre les
    gouttieres plutot que de retirer quelque chose de la barre. */
+/* Trois colonnes sur tablette et petit portable, deux sur telephone. */
+@media(max-width:1024px){
+  .grid,.kits,.bundles{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:768px){
+  .grid,.kits,.bundles{grid-template-columns:repeat(2,1fr)}
+}
+
 /* ══ DEUX PRODUITS PAR LIGNE SUR TELEPHONE ═══════════════════════════════
    Une seule colonne donnait une page interminable : vingt-six cartes a la
    file, et il fallait defiler longtemps avant de soupconner l'etendue du
