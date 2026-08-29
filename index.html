@@ -814,8 +814,7 @@ a.btn.wide.payhip-buy-button{
 <div class="pv" id="pv" hidden role="dialog" aria-modal="true" aria-label="Product preview">
   <div class="pvbar">
     <div class="pvtitle"><strong id="pvname"></strong><span id="pvmeta"></span></div>
-    <a class="btn sm payhip-buy-button" id="pvbuy" data-test-id="viewer-buy"
-       data-theme="none" href="#" target="_blank" rel="noopener"></a>
+    <a class="btn sm payhip-buy-button" id="pvbuy" data-test-id="viewer-buy" href="#"></a>
     <button class="pvx" id="pvclose" data-test-id="viewer-close" type="button" aria-label="Close preview">&times;</button>
   </div>
   <div class="pvscroll" id="pvpages"></div>
@@ -1020,9 +1019,16 @@ const link = c => c ? PH(c) : PAYHIP_STORE;
    pas un produit et n'a rien a ouvrir en surimpression. */
 const buy  = (c, cls, label, tid) =>
   '<a class="' + (cls ? cls + ' ' : '') + (c ? 'payhip-buy-button' : '') + '" href="' + link(c) + '"'
-  + (c ? ' data-theme="none" data-product="' + c + '"' : '')
+  + (c ? ' data-product="' + c + '"' : '')
   + (tid ? ' data-test-id="buy-' + tid + '"' : '')
-  + ' target="_blank" rel="noopener">' + label + '</a>';
+  /* Pas de target sur un bouton accroche par Payhip : son exemple n'en a
+     pas, et un lien annonce pour un autre onglet donne au script une raison
+     de renoncer a la surimpression. Sans lui, si le script ne charge pas,
+     le clic mene a la fiche Payhip dans le meme onglet — le parcours de
+     caisse ordinaire. Le lien vers la boutique, lui, garde son onglet : il
+     n'est pas un achat, il ouvre un catalogue a cote. */
+  + (c ? '' : ' target="_blank" rel="noopener"')
+  + '>' + label + '</a>';
 
 /* Lien "See preview" : ouvre la visionneuse, ne pointe vers aucun fichier. */
 const EYE = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8s2.6-4.2 7-4.2S15 8 15 8s-2.6 4.2-7 4.2S1 8 1 8Z"/><circle cx="8" cy="8" r="1.9"/></svg>';
