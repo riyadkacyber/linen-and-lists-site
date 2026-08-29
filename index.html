@@ -378,6 +378,17 @@ h3{font-weight:700}
 .kfoot .seeprev{margin-bottom:.6rem}
 .pbody .pend{margin-top:auto}
 .pbody .pend .seeprev{margin-bottom:.55rem}
+/* Le script Payhip pose sa propre feuille de style, chargee apres celle-ci
+   et donc gagnante a specificite egale. Ces trois selecteurs valent 0,3,0
+   contre 0,1,0 : les boutons gardent l'apparence du site, quoi que Payhip
+   decide d'appliquer a .payhip-buy-button. */
+a.btn.payhip-buy-button,
+a.btn.sm.payhip-buy-button,
+a.btn.wide.payhip-buy-button{
+  font-family:inherit;font-size:.86rem;font-weight:500;line-height:normal;
+  text-transform:none;letter-spacing:normal;text-decoration:none;
+  border-radius:var(--r);box-shadow:none;text-shadow:none;
+  min-width:0;height:auto;vertical-align:baseline}
 .inkit{font-size:.74rem;line-height:1.5;color:var(--muted);margin:.6rem 0 0}
 .inkit a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
 .inkit a:hover,.inkit a:focus-visible{border-bottom-color:currentColor}
@@ -803,7 +814,8 @@ h3{font-weight:700}
 <div class="pv" id="pv" hidden role="dialog" aria-modal="true" aria-label="Product preview">
   <div class="pvbar">
     <div class="pvtitle"><strong id="pvname"></strong><span id="pvmeta"></span></div>
-    <a class="btn sm" id="pvbuy" data-test-id="viewer-buy" href="#" target="_blank" rel="noopener"></a>
+    <a class="btn sm payhip-buy-button" id="pvbuy" data-test-id="viewer-buy"
+       data-theme="none" href="#" target="_blank" rel="noopener"></a>
     <button class="pvx" id="pvclose" data-test-id="viewer-close" type="button" aria-label="Close preview">&times;</button>
   </div>
   <div class="pvscroll" id="pvpages"></div>
@@ -1003,8 +1015,12 @@ const link = c => c ? PH(c) : PAYHIP_STORE;
 /* Le 4e argument est l'identifiant de test : les parcours d'achat automatises
    s'y accrochent au lieu d'un XPath, qui casse a la premiere retouche de mise
    en page. Il vaut la cle du produit, stable et unique. */
+/* data-product dit au script Payhip quel produit ouvrir. Il n'est pose que
+   s'il y a un code : sans code, le lien retombe sur la boutique, qui n'est
+   pas un produit et n'a rien a ouvrir en surimpression. */
 const buy  = (c, cls, label, tid) =>
-  '<a class="' + cls + '" href="' + link(c) + '"'
+  '<a class="' + (cls ? cls + ' ' : '') + (c ? 'payhip-buy-button' : '') + '" href="' + link(c) + '"'
+  + (c ? ' data-theme="none" data-product="' + c + '"' : '')
   + (tid ? ' data-test-id="buy-' + tid + '"' : '')
   + ' target="_blank" rel="noopener">' + label + '</a>';
 
@@ -1161,6 +1177,14 @@ function ouvreVisionneuse(nom, detail, lien, libelle, pages){
   const b = $('#pvbuy');
   b.href = lien;
   b.textContent = libelle;
+  /* Un seul bouton pour tous les produits : son data-product suit celui
+     qu'on regarde. La classe, elle, ne bouge pas — Payhip accroche ses
+     boutons une fois, et un bouton qui prend la classe plus tard ne serait
+     jamais accroche. Sans code, le lien retombe sur la boutique : on retire
+     le data-product, et le clic reprend le chemin ordinaire. */
+  const codeVu = /payhip\.com\/b\/([A-Za-z0-9]+)/.exec(lien);
+  if (codeVu) b.dataset.product = codeVu[1];
+  else delete b.dataset.product;
   pvPages.innerHTML = pages.map((pg, i) =>
     '<figure class="pvpage"><img src="' + pg.src + '"'
     + ' alt="' + esc(pg.alt) + '" loading="lazy"'
@@ -1448,5 +1472,20 @@ if('IntersectionObserver' in window){
   document.querySelectorAll('.rv').forEach(el => io.observe(el));
 } else document.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
 </script>
+
+<!-- La caisse Payhip en surimpression : le paiement s'ouvre par-dessus le
+     site au lieu d'emmener la cliente sur payhip.com.
+
+     Il est ici, et non dans le <head>, pour deux raisons. Les 42 boutons
+     d'achat sont fabriques par le script ci-dessus : charge en tete, Payhip
+     chercherait des boutons qui n'existent pas encore. Et un script tiers
+     bloquant en tete retarderait le premier affichage, qu'on vient
+     justement d'alleger.
+
+     Chaque bouton garde son href et son target : si ce script ne charge pas
+     — bloque, hors ligne, CSP trop stricte — le clic fait exactement ce
+     qu'il faisait avant, il ouvre la fiche Payhip dans un onglet. La
+     surimpression est un gain, jamais une dependance. -->
+<script defer type="text/javascript" src="https://payhip.com/payhip.js"></script>
 </body>
 </html>
