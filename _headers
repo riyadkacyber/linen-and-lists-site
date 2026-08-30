@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-HNp0FtBl7c1tEFPQzaeQRQJ5i5RMEVczdDGv9we8oEs=' https://payhip.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://payhip.com; font-src 'self' https://fonts.gstatic.com https://payhip.com; img-src 'self' data: https://payhip.com; connect-src 'self' https://payhip.com; frame-src https://payhip.com; form-action https://formsubmit.co; frame-ancestors 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-TnkcBvbX4SdpZxx1MWU8vxQsb8GFpgS7qZGQVNufNUU=' https://payhip.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://payhip.com; font-src 'self' https://fonts.gstatic.com https://payhip.com; img-src 'self' data: https://payhip.com; connect-src 'self' https://payhip.com; frame-src https://payhip.com; form-action https://formsubmit.co; frame-ancestors 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=()
