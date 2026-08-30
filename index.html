@@ -378,6 +378,79 @@ h3{font-weight:700}
 .kfoot .seeprev{margin-bottom:.6rem}
 .pbody .pend{margin-top:auto}
 .pbody .pend .seeprev{margin-bottom:.55rem}
+/* ══ LE PANIER ═══════════════════════════════════════════════════════════
+   Payhip encaisse un panier entier en une fois : son adresse de caisse
+   accepte cart_links[] et qty[] repetes. Le site tient donc la liste, et
+   n'envoie la visiteuse chez Payhip qu'au moment de payer — une fois, pas
+   une fois par produit.
+
+   Rien n'est stocke ailleurs que dans son navigateur : pas de compte, pas
+   de serveur, pas de base. Le panier survit a un rechargement et meurt
+   avec le navigateur, ce qui est exactement ce qu'on attend de lui. */
+.cartbtn{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border:1px solid var(--rule);border-radius:var(--r);
+  background:var(--card);color:var(--ink);cursor:pointer;flex:none}
+.cartbtn:hover{border-color:var(--accent);color:var(--accent)}
+.cartbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cartbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.cartn{position:absolute;top:-6px;right:-6px;min-width:17px;height:17px;padding:0 4px;
+  border-radius:9px;background:var(--accent);color:#fff;font-size:.62rem;font-weight:600;
+  line-height:17px;text-align:center;font-variant-numeric:tabular-nums}
+.cartn[hidden]{display:none}
+
+.cart{position:fixed;inset:0;z-index:130;display:flex;justify-content:flex-end}
+.cart[hidden]{display:none}
+.cartveil{position:absolute;inset:0;background:rgba(20,24,28,.44);border:0;padding:0;cursor:pointer}
+.cartbox{position:relative;display:flex;flex-direction:column;width:min(400px,100%);
+  background:var(--card);box-shadow:-18px 0 50px -30px rgba(20,24,28,.5)}
+.carthead{flex:none;display:flex;align-items:center;gap:.8rem;padding:1.1rem 1.2rem;
+  border-bottom:1px solid var(--rule)}
+.carthead strong{font-family:var(--serif);font-size:1.02rem;flex:1}
+.cartx{flex:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--rule);
+  background:none;color:var(--ink);font-size:1.25rem;line-height:1;cursor:pointer}
+.cartx:hover{background:var(--wash)}
+.cartx:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cartbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:.4rem 1.2rem}
+.cartvide{padding:2.4rem 0;text-align:center;color:var(--muted);font-size:.86rem}
+.cline{display:flex;gap:.75rem;padding:.85rem 0;border-bottom:1px solid var(--rule)}
+.cline:last-child{border-bottom:0}
+.cline img{width:38px;height:49px;object-fit:cover;border:1px solid var(--rule);flex:none}
+.cinfo{flex:1;min-width:0}
+.cinfo h4{margin:0;font-size:.86rem;font-weight:600;line-height:1.3}
+.cinfo p{margin:.16rem 0 0;font-size:.72rem;color:var(--muted)}
+.cprix{font-family:var(--serif);font-size:.95rem;flex:none}
+.cdel{display:block;margin-top:.3rem;padding:0;border:0;background:none;cursor:pointer;
+  font:inherit;font-size:.72rem;color:var(--muted);text-decoration:underline}
+.cdel:hover{color:var(--ink)}
+.cdel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* Le doublon : deja compris dans un kit ou un bundle du panier. On ne
+   l'enleve pas d'office — c'est son panier — mais on le dit, et on met le
+   retrait a un clic. */
+.cdouble{margin:.5rem 0 0;padding:.5rem .6rem;border-radius:var(--r);
+  background:var(--wash);font-size:.72rem;line-height:1.45;color:var(--body)}
+.cdouble strong{font-weight:600}
+.cartfoot{flex:none;padding:1.1rem 1.2rem;border-top:1px solid var(--rule)}
+.ctotal{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.2rem}
+.ctotal span{font-size:.82rem;color:var(--muted)}
+.ctotal b{font-family:var(--serif);font-size:1.3rem;font-weight:400}
+.cnote{margin:0 0 .8rem;font-size:.7rem;color:var(--muted);line-height:1.45}
+.cadd{flex:none;width:34px;height:34px;display:inline-flex;align-items:center;
+  justify-content:center;border:1px solid var(--rule);border-radius:var(--r);
+  background:var(--card);color:var(--ink);cursor:pointer}
+.cadd:hover{border-color:var(--accent);color:var(--accent)}
+.cadd:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cadd svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;
+  stroke-linecap:round}
+.cadd.dedans{border-color:var(--accent);background:var(--accent);color:#fff}
+.kfoot .cadd,.bundle .cadd{width:100%;height:auto;padding:.55rem;margin-top:.5rem;gap:.4rem;
+  font-size:.8rem;font-weight:500}
+.bundle .cadd{border-color:rgba(255,255,255,.3);background:none;color:#fff}
+.bundle .cadd:hover{border-color:#fff}
+@media(max-width:640px){.cartbox{width:100%}}
+
+.pbody .fbtns{display:flex;align-items:center;gap:.42rem}
+
 /* Le script Payhip pose sa propre feuille de style, chargee apres celle-ci
    et donc gagnante a specificite egale. Ces trois selecteurs valent 0,3,0
    contre 0,1,0 : les boutons gardent l'apparence du site, quoi que Payhip
@@ -436,6 +509,14 @@ a.btn.wide.payhip-buy-button{
    downloads" en deux dans une barre haute de 60 px. */
 .bar .btn.sm{flex:none;white-space:nowrap}
 
+/* La barre tenait a 9 px pres avant le panier ; son bouton en ajoute 38 et
+   elle debordait de 11 a 50 px jusqu'a 430. On raccourcit le libelle plutot
+   que de retirer le bouton : le telechargement gratuit est l'entree de tout
+   le reste, et "Free" dit la meme chose que "Free downloads". */
+@media(max-width:560px){
+  .navlong{display:none}
+  .cartbtn{width:34px;height:34px}
+}
 @media(max-width:380px){
   .bar{gap:.6rem}
   .mark{font-size:.96rem}
@@ -563,7 +644,12 @@ a.btn.wide.payhip-buy-button{
       <a href="#faq">FAQ</a>
       <a class="navcontact" data-test-id="nav-contact" href="#contact">Contact</a>
     </nav>
-    <a class="btn sm ghost" data-test-id="nav-free" href="#free">Free downloads</a>
+    <a class="btn sm ghost" data-test-id="nav-free" href="#free">Free<span class="navlong"> downloads</span></a>
+    <button class="cartbtn" id="cartbtn" type="button" data-test-id="cart-open"
+            aria-label="Your basket">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14l-1.3 9.2a1.6 1.6 0 0 1-1.6 1.4H5.9a1.6 1.6 0 0 1-1.6-1.4Z"/><path d="M7 6a3 3 0 0 1 6 0"/></svg>
+      <span class="cartn" id="cartn" hidden>0</span>
+    </button>
   </div>
 </header>
 
@@ -821,6 +907,21 @@ a.btn.wide.payhip-buy-button{
   <p class="pvnote">Preview only - a few pages, on screen. The full printable file comes with your purchase.</p>
 </div>
 
+<!-- Le panier. Il ne vit que dans le navigateur de la visiteuse : rien
+     n'est envoye nulle part avant qu'elle clique sur la caisse. -->
+<div class="cart" id="cart" hidden role="dialog" aria-modal="true" aria-label="Your basket">
+  <button class="cartveil" id="cartveil" type="button" tabindex="-1" aria-label="Close basket"></button>
+  <div class="cartbox">
+    <div class="carthead">
+      <strong>Your basket</strong>
+      <button class="cartx" id="cartx" type="button" data-test-id="cart-close"
+              aria-label="Close basket">&times;</button>
+    </div>
+    <div class="cartbody" id="cartbody"></div>
+    <div class="cartfoot" id="cartfoot"></div>
+  </div>
+</div>
+
 <script>
 const PAGES = {"00-Complete-Wedding-Planning-Kit":["images/00-Complete-Wedding-Planning-Kit-1.jpg","images/00-Complete-Wedding-Planning-Kit-2.jpg"],"01-FREE-12-Month-Wedding-Checklist":["images/01-FREE-12-Month-Wedding-Checklist-1.jpg","images/01-FREE-12-Month-Wedding-Checklist-2.jpg"],"02-Wedding-Budget-Planner":["images/02-Wedding-Budget-Planner-1.jpg","images/02-Wedding-Budget-Planner-2.jpg"],"03-Wedding-Vendor-Questions":["images/03-Wedding-Vendor-Questions-1.jpg","images/03-Wedding-Vendor-Questions-2.jpg"],"04-Wedding-Guest-List-Seating-Chart":["images/04-Wedding-Guest-List-Seating-Chart-1.jpg","images/04-Wedding-Guest-List-Seating-Chart-2.jpg"],"05-Wedding-Day-Timeline":["images/05-Wedding-Day-Timeline-1.jpg","images/05-Wedding-Day-Timeline-2.jpg"],"09-Ultimate-Home-Management-Binder":["images/09-Ultimate-Home-Management-Binder-1.jpg","images/09-Ultimate-Home-Management-Binder-2.jpg"],"10-FREE-Weekly-Cleaning-Schedule":["images/10-FREE-Weekly-Cleaning-Schedule-1.jpg","images/10-FREE-Weekly-Cleaning-Schedule-2.jpg"],"11-Home-Cleaning-Schedules":["images/11-Home-Cleaning-Schedules-1.jpg","images/11-Home-Cleaning-Schedules-2.jpg"],"12-Meal-Planner-Grocery-List":["images/12-Meal-Planner-Grocery-List-1.jpg","images/12-Meal-Planner-Grocery-List-2.jpg"],"13-Pantry-Freezer-Inventory":["images/13-Pantry-Freezer-Inventory-1.jpg","images/13-Pantry-Freezer-Inventory-2.jpg"],"14-Family-Budget-Pack":["images/14-Family-Budget-Pack-1.jpg","images/14-Family-Budget-Pack-2.jpg"],"15-Home-Maintenance-Records":["images/15-Home-Maintenance-Records-1.jpg","images/15-Home-Maintenance-Records-2.jpg"],"16-Family-Week-Planner":["images/16-Family-Week-Planner-1.jpg","images/16-Family-Week-Planner-2.jpg"],"17-Household-Information-Pages":["images/17-Household-Information-Pages-1.jpg","images/17-Household-Information-Pages-2.jpg"],"18-Cash-Envelope-System-Kit":["images/18-Cash-Envelope-System-Kit-1.jpg","images/18-Cash-Envelope-System-Kit-2.jpg"],"19-FREE-Cash-Envelope-Starter":["images/19-FREE-Cash-Envelope-Starter-1.jpg","images/19-FREE-Cash-Envelope-Starter-2.jpg"],"20-Debt-Payoff-Trackers":["images/20-Debt-Payoff-Trackers-1.jpg","images/20-Debt-Payoff-Trackers-2.jpg"],"21-Savings-Challenge-Pack":["images/21-Savings-Challenge-Pack-1.jpg","images/21-Savings-Challenge-Pack-2.jpg"],"22-Cash-Budget-Planner":["images/22-Cash-Budget-Planner-1.jpg","images/22-Cash-Budget-Planner-2.jpg"],"23-Cash-Envelope-Template-Set":["images/23-Cash-Envelope-Template-Set-1.jpg","images/23-Cash-Envelope-Template-Set-2.jpg"],"24-FREE-Hospital-Bag-Checklists":["images/24-FREE-Hospital-Bag-Checklists-1.jpg","images/24-FREE-Hospital-Bag-Checklists-2.jpg"],"25-Pregnancy-Journal-Tracker":["images/25-Pregnancy-Journal-Tracker-1.jpg","images/25-Pregnancy-Journal-Tracker-2.jpg"],"26-Baby-Milestone-Cards":["images/26-Baby-Milestone-Cards-1.jpg","images/26-Baby-Milestone-Cards-2.jpg"],"27-Newborn-Sleep-Feeding-Log":["images/27-Newborn-Sleep-Feeding-Log-1.jpg","images/27-Newborn-Sleep-Feeding-Log-2.jpg"],"28-Pregnancy-and-New-Baby-Kit":["images/28-Pregnancy-and-New-Baby-Kit-1.jpg","images/28-Pregnancy-and-New-Baby-Kit-2.jpg"]};   /* key -> [page1, page2] */
 
@@ -1032,10 +1133,21 @@ const buy  = (c, cls, label, tid) =>
 
 /* Lien "See preview" : ouvre la visionneuse, ne pointe vers aucun fichier. */
 const EYE = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8s2.6-4.2 7-4.2S15 8 15 8s-2.6 4.2-7 4.2S1 8 1 8Z"/><circle cx="8" cy="8" r="1.9"/></svg>';
-const seeprev = k => PREVIEW_PAGES[k]
-  ? '<button class="seeprev" type="button" data-test-id="preview-' + k + '" data-key="' + k + '">'
-    + EYE + 'See preview</button>'
+/* tid separe de la cle : le meme produit parait dans deux grilles, et deux
+   elements portant le meme repere n'en designent plus aucun. */
+const seeprev = (k, tid) => PREVIEW_PAGES[k]
+  ? '<button class="seeprev" type="button" data-test-id="preview-' + (tid || k) + '"'
+    + ' data-key="' + k + '">' + EYE + 'See preview</button>'
   : '';
+
+/* Le bouton d'ajout au panier. Les gratuits n'en ont pas : ils se
+   telechargent, ils ne s'achetent pas, et un article a 0 $ n'a rien a faire
+   dans une caisse. */
+const PLUS = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg>';
+const cadd = (cle, tid, texte) =>
+  '<button class="cadd" type="button" data-test-id="add-' + tid + '"'
+  + ' data-cle="' + esc(cle) + '" aria-pressed="false">' + PLUS
+  + (texte ? '<span>' + texte + '</span>' : '') + '</button>';
 
 /* two-page gallery markup */
 function gallery(p, tagText, tagFree){
@@ -1056,14 +1168,17 @@ function gallery(p, tagText, tagFree){
 $('#kitgrid').innerHTML = ALL.filter(p => p.status === 'kit').map(p => {
   const f = ALL.find(x => x.cid === p.cid && x.status === 'free');
   const tryline = f ? '<p class="tryfree">Not sure? '
-                      + buy(code(f.key), '', 'Try the free '+esc(f.name), f.key) + ' first.</p>' : '';
+                      + buy(code(f.key), '', 'Try the free '+esc(f.name), 'trykit-'+f.key) + ' first.</p>' : '';
   return '<article class="kit" style="--c:'+p.c+';--accent:'+p.c+'">'
    + gallery(p, 'Complete kit', false)
    + '<div class="kbody"><p class="cl">'+esc(p.cl)+'</p><h3>'+esc(p.name)+'</h3>'
    + '<ul>'+(p.bullets||[]).map(b=>'<li>'+esc(b)+'</li>').join('')+'</ul>'
    + '<div class="kfoot"><div class="kprice"><span class="n">$'+p.price+'</span>'
-   + '<span class="u">'+esc(p.pages)+'</span></div>'+tryline+seeprev(p.key)
-   + buy(code(p.key), 'btn wide', 'Get this kit <span class="arw">&rarr;</span>', p.key)
+   + '<span class="u">'+esc(p.pages)+'</span></div>'+tryline+seeprev(p.key, 'kit-'+p.key)
+   /* Prefixe 'kit-' : ce meme kit reparait plus bas dans le catalogue, et
+      deux elements portant le meme repere n'en designent plus aucun. */
+   + buy(code(p.key), 'btn wide', 'Get this kit <span class="arw">&rarr;</span>', 'kit-'+p.key)
+   + cadd(p.key, 'kit-'+p.key, 'Add to basket')
    + '</div></div></article>';
 }).join('');
 
@@ -1084,11 +1199,13 @@ $('#bundlegrid').innerHTML = BUNDLES.map(b => {
    + (save>0?'<span class="save">Save $'+save+'</span>':'')+'</div>'
    + '<p class="perkit">$'+per+' a kit · '+b.kits.length+' complete kits</p>'
    + '<button class="seeprev" type="button" data-bundle="'+esc(b.name)+'">'+EYE+'See preview</button>'
-   + buy(code('bundle:' + b.name), 'btn wide', 'Get this bundle', 'bundle-'+slug(b.name))+'</div></article>';
+   + buy(code('bundle:' + b.name), 'btn wide', 'Get this bundle', 'bundle-'+slug(b.name))
+   + cadd('bundle:' + b.name, 'bundle-'+slug(b.name), 'Add to basket')+'</div></article>';
 }).join('');
 
 /* ─────────── product card ─────────── */
-function card(p){
+function card(p, pre){
+  pre = pre || '';
   const free = p.status === 'free';
   const kit  = p.status === 'kit';
   /* Le kit de la collection contient ce module. Des le troisieme module
@@ -1106,8 +1223,10 @@ function card(p){
    + '<h3>'+esc(p.name)+'</h3><p>'+esc(p.desc)+'</p>'
    + (complet ? '<p class="inkit">Also in the <a href="#'+complet.key+'">'
                 + esc(complet.name)+'</a> — '+esc(complet.pages)+', $'+complet.price+'.</p>' : '')
-   + '<div class="pend">'+seeprev(p.key)+'<div class="foot">'+amt
-   + buy(code(p.key), 'btn sm', free?'Download':'Buy', p.key)+'</div></div></div></article>';
+   + '<div class="pend">'+seeprev(p.key, pre+p.key)+'<div class="foot">'+amt
+   + '<span class="fbtns">' + (free ? '' : cadd(p.key, pre+p.key, ''))
+   + buy(code(p.key), 'btn sm', free?'Download':'Buy', pre+p.key)
+   + '</span></div></div></div></article>';
 }
 
 /* ─────────── tabs ─────────── */
@@ -1134,13 +1253,15 @@ function setFilter(i){
   const order = {kit:0, module:1, free:2};
   const items = ALL.filter(p=>f.ids.includes(p.cid)).slice()
     .sort((a,b)=>(order[a.status]-order[b.status]) || ((a.price||99)-(b.price||99)));
-  pgrid.innerHTML = items.map(card).join('');
+  /* map passe l'indice en second argument : card(p, pre) le prendrait pour
+     un prefixe de repere. On appelle donc card explicitement. */
+  pgrid.innerHTML = items.map(p => card(p)).join('');
   const col = f.ids.length===1 ? SHOP.find(c=>c.id===f.ids[0]) : null;
   document.documentElement.style.setProperty('--accent', col ? col.color : '#5F7A52');
   document.documentElement.style.setProperty('--accent-dark', col ? col.dark : '#4A6140');
 }
 setFilter(0);
-$('#freegrid').innerHTML = ALL.filter(p=>p.status==='free').map(card).join('');
+$('#freegrid').innerHTML = ALL.filter(p=>p.status==='free').map(p => card(p, 'free-')).join('');
 
 /* ─────────── gallery interaction (delegated, works everywhere) ─────────── */
 function show(gal, idx){
@@ -1480,6 +1601,169 @@ if('IntersectionObserver' in window){
   }), {threshold:.1});
   document.querySelectorAll('.rv').forEach(el => io.observe(el));
 } else document.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+
+/* ─────────── le panier ───────────
+   Payhip encaisse plusieurs produits d'un coup : son adresse de caisse
+   accepte cart_links[] et qty[] repetes, comme le montre l'adresse que son
+   propre script fabrique pour un seul article. Le site tient donc la liste,
+   et n'envoie la visiteuse chez Payhip qu'une fois, a la fin.
+
+   Une cle de panier est celle d'un produit, ou 'bundle:Nom' pour un bundle
+   — la meme cle que PAYHIP, donc code() sait deja la traduire. */
+const CLEF_PANIER = 'linenandlists.panier';
+
+function litPanier(){
+  try {
+    const brut = localStorage.getItem(CLEF_PANIER);
+    const liste = brut ? JSON.parse(brut) : [];
+    /* Un produit retire du catalogue depuis la derniere visite ne doit pas
+       rester dans le panier : il n'a plus ni prix ni code. */
+    return Array.isArray(liste) ? liste.filter(articleValide) : [];
+  } catch (e) { return []; }
+}
+function ecritPanier(){
+  try { localStorage.setItem(CLEF_PANIER, JSON.stringify(PANIER)); } catch (e) {}
+}
+
+const estBundle = c => c.slice(0, 7) === 'bundle:';
+const leBundle  = c => BUNDLES.find(b => 'bundle:' + b.name === c);
+const leProduit = c => ALL.find(p => p.key === c);
+const articleValide = c => estBundle(c) ? !!leBundle(c) : !!leProduit(c);
+
+const nomArticle   = c => estBundle(c) ? leBundle(c).name + ' Bundle' : leProduit(c).name;
+const prixArticle  = c => (estBundle(c) ? leBundle(c) : leProduit(c)).price || 0;
+const detailArticle = c => estBundle(c)
+  ? leBundle(c).kits.length + ' complete kits'
+  : leProduit(c).pages;
+const imageArticle = c => estBundle(c)
+  ? 'images/bundle-' + slug(leBundle(c).name) + '-1.jpg'
+  : src(leProduit(c).key, 0);
+
+/* Ce qu'un article couvre. Un module ne couvre que lui. Un kit couvre les
+   pages de sa collection — c'est ce qu'il est. Un bundle couvre ses kits, et
+   donc ce que ces kits couvrent. C'est de la que sort l'avertissement : un
+   article deja compris dans un autre du panier serait paye deux fois. */
+function couvre(c){
+  if (estBundle(c)){
+    const b = leBundle(c);
+    return b ? [c].concat(...b.kits.map(n => couvre(find(n).key))) : [c];
+  }
+  const p = leProduit(c);
+  if (!p || p.status !== 'kit') return [c];
+  return [c].concat(ALL.filter(x => x.cid === p.cid && x.status !== 'kit').map(x => x.key));
+}
+
+/* Qui, dans le panier, contient deja cet article ? */
+const contenuPar = c => PANIER.filter(a => a !== c && couvre(a).indexOf(c) !== -1);
+
+let PANIER = litPanier();
+
+function dansLePanier(c){ return PANIER.indexOf(c) !== -1; }
+
+function basculeArticle(c){
+  const i = PANIER.indexOf(c);
+  if (i === -1) PANIER.push(c); else PANIER.splice(i, 1);
+  ecritPanier(); rendPanier(); marqueBoutons();
+}
+function retireArticle(c){
+  const i = PANIER.indexOf(c);
+  if (i !== -1){ PANIER.splice(i, 1); ecritPanier(); rendPanier(); marqueBoutons(); }
+}
+
+/* Les boutons d'ajout portent l'etat du panier : une visiteuse doit voir
+   d'un coup d'oeil ce qu'elle a deja pris, sans ouvrir le tiroir. */
+function marqueBoutons(){
+  document.querySelectorAll('.cadd').forEach(b => {
+    const dedans = dansLePanier(b.dataset.cle);
+    b.classList.toggle('dedans', dedans);
+    b.setAttribute('aria-pressed', dedans ? 'true' : 'false');
+    b.setAttribute('aria-label', (dedans ? 'Remove from basket: ' : 'Add to basket: ')
+                                 + nomArticle(b.dataset.cle));
+  });
+  const n = PANIER.length;
+  const pastille = $('#cartn');
+  pastille.textContent = n;
+  pastille.hidden = n === 0;
+}
+
+/* L'adresse de caisse de Payhip, pour tout le panier d'un coup. Elle reprend
+   la forme que le script de Payhip produit pour un article : link[] et
+   cart_links[] repetes, une quantite par code. */
+function adresseCaisse(){
+  const codes = PANIER.map(code).filter(Boolean);
+  if (!codes.length) return PAYHIP_STORE;
+  const p = [];
+  codes.forEach(c => p.push('link%5B%5D=' + encodeURIComponent(c)));
+  codes.forEach(c => p.push('cart_links%5B%5D=' + encodeURIComponent(c)));
+  codes.forEach(c => p.push('qty%5B' + encodeURIComponent(c) + '%5D=1'));
+  return 'https://payhip.com/buy?' + p.join('&');
+}
+
+function rendPanier(){
+  const corps = $('#cartbody'), pied = $('#cartfoot');
+  if (!PANIER.length){
+    corps.innerHTML = '<p class="cartvide">Your basket is empty.<br>'
+      + 'Add a section, a kit or a bundle and pay for everything at once.</p>';
+    pied.innerHTML = '';
+    return;
+  }
+  corps.innerHTML = PANIER.map(c => {
+    const dedans = contenuPar(c);
+    const note = dedans.length
+      ? '<p class="cdouble">Already included in <strong>' + esc(nomArticle(dedans[0]))
+        + '</strong>. You would pay for it twice.'
+        + '<button class="cdel" type="button" data-del="' + esc(c)
+        + '">Remove it</button></p>'
+      : '';
+    return '<div class="cline"><img src="' + imageArticle(c) + '" alt="" loading="lazy">'
+      + '<div class="cinfo"><h4>' + esc(nomArticle(c)) + '</h4>'
+      + '<p>' + esc(detailArticle(c)) + '</p>' + note
+      + '<button class="cdel" type="button" data-del="' + esc(c) + '">Remove</button></div>'
+      + '<span class="cprix">$' + prixArticle(c) + '</span></div>';
+  }).join('');
+  const total = PANIER.reduce((s, c) => s + prixArticle(c), 0);
+  pied.innerHTML = '<div class="ctotal"><span>' + PANIER.length + ' item'
+    + (PANIER.length > 1 ? 's' : '') + '</span><b>$' + total + '</b></div>'
+    + '<p class="cnote">You pay once, on Payhip. Every file downloads immediately.</p>'
+    + '<a class="btn wide" data-test-id="cart-checkout" href="' + adresseCaisse()
+    + '">Check out on Payhip</a>';
+}
+
+const tiroir = $('#cart');
+function ouvrePanier(){
+  rendPanier();
+  tiroir.hidden = false;
+  document.body.style.overflow = 'hidden';
+  $('#cartx').focus();
+}
+function fermePanier(){
+  tiroir.hidden = true;
+  if (pv.hidden) document.body.style.overflow = '';
+  $('#cartbtn').focus();
+}
+
+$('#cartbtn').addEventListener('click', ouvrePanier);
+$('#cartx').addEventListener('click', fermePanier);
+$('#cartveil').addEventListener('click', fermePanier);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !tiroir.hidden) fermePanier();
+});
+tiroir.addEventListener('click', e => {
+  const d = e.target.closest('[data-del]');
+  if (d) retireArticle(d.dataset.del);
+});
+/* Les boutons d'ajout naissent avec les cartes : on ecoute la page, pas
+   chaque bouton. Le tiroir s'ouvre a l'ajout — c'est la que se lit
+   l'avertissement de doublon, et le total. */
+document.addEventListener('click', e => {
+  const b = e.target.closest('.cadd');
+  if (!b) return;
+  const avant = dansLePanier(b.dataset.cle);
+  basculeArticle(b.dataset.cle);
+  if (!avant) ouvrePanier();
+});
+
+marqueBoutons();
 </script>
 
 <!-- La caisse Payhip en surimpression : le paiement s'ouvre par-dessus le
