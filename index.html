@@ -441,87 +441,68 @@ h3{font-weight:700}
 
 .pbody .fbtns{display:flex;align-items:center;gap:.42rem}
 
-/* ══ LES BOUTONS D'ACTION ════════════════════════════════════════════════
-   Deux gestes par carte, et une hierarchie qui se lit sans reflechir :
-   ajouter au panier remplit, acheter tout de suite se contente d'un trait.
-   L'ajout passe devant parce que c'est lui qui construit une commande a
-   plusieurs articles ; l'achat direct reste a un clic pour qui ne veut
-   qu'une chose.
+/* ══ LES DEUX ACTIONS D'UNE CARTE ════════════════════════════════════════
+   Une pastille pleine, et une action de texte. Pas deux boutons lourds :
+   sur vingt-six cartes, la deuxieme pastille doublait le poids visuel de la
+   grille sans rien dire de plus. Le geste qui construit une commande a
+   plusieurs articles se voit ; celui qui n'en achete qu'un reste a un clic,
+   discret.
 
-   Le rayon des boutons (11 px) est plus doux que celui des cartes (3 px) :
-   ce qui se touche s'arrondit, ce qui se lit reste net. */
-.acts{display:flex;flex-direction:column;gap:.5rem;margin-top:.7rem}
+   La pastille prend la couleur de sa collection — sauge pour le mariage,
+   terre pour la maison — la ou tout le reste de la carte est en encre. Une
+   seule couleur par carte, et c'est celle qu'on touche. */
+.acts{display:flex;flex-direction:column;align-items:stretch;gap:.15rem;margin-top:.75rem}
 
-.btn{border-radius:var(--rb);font-weight:600;letter-spacing:-.004em;
-  min-height:44px;justify-content:center;
-  transition:background .16s,border-color .16s,color .16s,transform .12s,box-shadow .16s}
-.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px -8px rgba(21,24,27,.34)}
-.btn:active{transform:translateY(0);box-shadow:none}
-.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.btn.sm{min-height:38px}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  width:100%;min-height:48px;padding:.75rem 1.2rem;
+  font:600 .875rem/1.2 var(--sans);letter-spacing:-.01em;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;
+  border-radius:999px;text-decoration:none;cursor:pointer;
+  transition:filter .16s,background .16s,border-color .16s,color .16s}
+.pill:hover{filter:brightness(.93)}
+.pill:active{filter:brightness(.87)}
+.pill:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.pill svg{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pill .i-ok{display:none}
+/* Deja pris : la pastille se vide de sa couleur et garde son trait. Elle
+   reste active — un second clic la retire. */
+.pill.dedans{background:transparent;color:var(--accent-dark);border-color:var(--accent)}
+.pill.dedans:hover{filter:none;background:var(--surface)}
+.pill.dedans .i-add{display:none}
+.pill.dedans .i-ok{display:block}
 
-/* Le trait plutot que l'aplat : l'achat direct, present sans dominer. */
-.btn.hollow{background:transparent;border-color:var(--rule2);color:var(--ink)}
-.btn.hollow:hover{border-color:var(--accent);color:var(--accent-dark);background:transparent}
-
-/* Le bouton d'ajout partage la forme des autres : c'est un bouton, pas une
-   icone posee a cote. Sur les cartes du catalogue il se reduit au carre,
-   faute de place a cote du prix. */
-.cadd{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
-  font:inherit;cursor:pointer;border:1px solid var(--accent);background:var(--accent);
-  color:#fff;border-radius:var(--rb);
-  transition:background .16s,border-color .16s,color .16s,transform .12s,box-shadow .16s}
-.cadd:hover{transform:translateY(-1px);box-shadow:0 6px 16px -8px rgba(21,24,27,.34)}
-.cadd:active{transform:translateY(0);box-shadow:none}
-.cadd:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.cadd svg{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;stroke-width:2;
-  stroke-linecap:round;stroke-linejoin:round}
-.cadd.wide{width:100%;min-height:44px;padding:.7rem 1rem;font-size:.86rem;font-weight:600}
-.cadd.sq{width:38px;height:38px;flex:none}
-.cadd .i-ok{display:none}
-/* Deja pris : l'aplat s'efface au profit d'une teinte, et la coche remplace
-   le plus. Le bouton reste actif — un second clic le retire. */
-.cadd.dedans{background:var(--surface);border-color:var(--accent);color:var(--accent-dark)}
-.cadd.dedans .i-add{display:none}
-.cadd.dedans .i-ok{display:block}
+/* L'achat direct : une action de texte, pas un second aplat. La fleche
+   avance d'un cheveu au survol — le seul mouvement de la carte. */
+.buynow{display:inline-flex;align-items:center;justify-content:center;gap:.3rem;
+  width:100%;min-height:40px;padding:.5rem;background:none;border:0;
+  font:500 .8rem/1 var(--sans);color:var(--muted);text-decoration:none;cursor:pointer;
+  transition:color .16s}
+.buynow em{font-style:normal;transition:transform .16s}
+.buynow:hover{color:var(--ink)}
+.buynow:hover em{transform:translateX(2px)}
+.buynow:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
 
 /* La carte sombre du meilleur bundle inverse la paire. */
-.bundle.best .cadd{background:#fff;border-color:#fff;color:var(--spine)}
-.bundle.best .cadd.dedans{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.5);color:#fff}
-.bundle.best .btn.hollow{background:transparent;border-color:rgba(255,255,255,.34);color:#fff}
-.bundle.best .btn.hollow:hover{border-color:#fff;color:#fff}
+.bundle.best .pill{background:#fff;border-color:#fff;color:var(--spine)}
+.bundle.best .pill.dedans{background:transparent;border-color:rgba(255,255,255,.55);color:#fff}
+.bundle.best .pill.dedans:hover{background:rgba(255,255,255,.1)}
+.bundle.best .buynow{color:#A8AEB4}
+.bundle.best .buynow:hover{color:#fff}
 
-/* Payhip pose sa feuille de style apres celle-ci et gagnerait a specificite
-   egale. Ces selecteurs valent 0,4,1 : le site garde la main sur la forme
-   ET sur les couleurs. La premiere version n'avait ni background ni color,
-   et les boutons d'achat sortaient au vert de Payhip. */
-a.btn.payhip-buy-button,
-a.btn.sm.payhip-buy-button,
-a.btn.wide.payhip-buy-button{
-  font-family:inherit;font-weight:600;line-height:normal;text-transform:none;
-  letter-spacing:-.004em;text-decoration:none;border-radius:var(--rb);
-  border-width:1px;border-style:solid;text-shadow:none;
-  min-width:0;height:auto;vertical-align:baseline;
-  background:var(--accent);border-color:var(--accent);color:#fff}
-a.btn.hollow.payhip-buy-button,
-a.btn.sm.hollow.payhip-buy-button,
-a.btn.wide.hollow.payhip-buy-button{
-  background:transparent;border-color:var(--rule2);color:var(--ink)}
-.bundle.best a.btn.hollow.payhip-buy-button{border-color:rgba(255,255,255,.34);color:#fff}
+/* Le prix reprend sa ligne, les actions se rangent dessous. Une seule facon
+   de faire sur les kits, les bundles et le catalogue. */
+.pbody .foot{justify-content:flex-start}
 
 /* Le doublon se voit de loin. Un brique sourd plutot qu'un rouge d'alerte :
    ce n'est pas une erreur de la cliente, c'est un avertissement qui lui
-   fait gagner de l'argent. */
+   fait gagner de l'argent. .cinfo p vaut (0,1,1) et battait .cdouble
+   (0,1,0) : il faut (0,2,0) pour que le rouge passe devant le gris. */
 .cinfo .cdouble{background:var(--danger-wash);color:var(--danger);
   border-left:2px solid var(--danger);padding:.55rem .65rem}
 .cinfo .cdouble strong{color:var(--danger);font-weight:700}
 .cinfo .cdouble .cdel{color:var(--danger);font-weight:600;text-decoration:underline}
 .cinfo .cdouble .cdel:hover{color:var(--danger-dark)}
-
-/* Le prix reprend sa ligne : les deux actions se rangent dessous, comme sur
-   les kits et les bundles. Une seule facon de faire dans toute la page. */
-.pbody .foot{justify-content:flex-start}
-.pbody .acts{margin-top:.6rem}
 
 .inkit{font-size:.74rem;line-height:1.5;color:var(--muted);margin:.6rem 0 0}
 .inkit a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
@@ -961,7 +942,8 @@ a.btn.wide.hollow.payhip-buy-button{
 <div class="pv" id="pv" hidden role="dialog" aria-modal="true" aria-label="Product preview">
   <div class="pvbar">
     <div class="pvtitle"><strong id="pvname"></strong><span id="pvmeta"></span></div>
-    <a class="btn sm payhip-buy-button" id="pvbuy" data-test-id="viewer-buy" href="#"></a>
+    <a class="btn sm" id="pvbuy" data-test-id="viewer-buy" href="#"
+       target="_blank" rel="noopener"></a>
     <button class="pvx" id="pvclose" data-test-id="viewer-close" type="button" aria-label="Close preview">&times;</button>
   </div>
   <div class="pvscroll" id="pvpages"></div>
@@ -1173,24 +1155,22 @@ const slug = n => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, 
 const PH   = c => 'https://payhip.com/b/' + c;
 const code = k => String(PAYHIP[k] || '').trim();
 const link = c => c ? PH(c) : PAYHIP_STORE;
-/* Le 4e argument est l'identifiant de test : les parcours d'achat automatises
-   s'y accrochent au lieu d'un XPath, qui casse a la premiere retouche de mise
-   en page. Il vaut la cle du produit, stable et unique. */
-/* data-product dit au script Payhip quel produit ouvrir. Il n'est pose que
-   s'il y a un code : sans code, le lien retombe sur la boutique, qui n'est
-   pas un produit et n'a rien a ouvrir en surimpression. */
-const buy  = (c, cls, label, tid) =>
-  '<a class="' + (cls ? cls + ' ' : '') + (c ? 'payhip-buy-button' : '') + '" href="' + link(c) + '"'
-  + (c ? ' data-product="' + c + '"' : '')
+/* Le 4e argument est l'identifiant de test : les parcours d'achat
+   automatises s'y accrochent au lieu d'un XPath, qui casse a la premiere
+   retouche de mise en page. Il vaut la cle du produit, stable et unique.
+
+   Plus de classe payhip-buy-button ni de data-product : le script de Payhip
+   n'a jamais ouvert sa caisse en surimpression — deux essais, deux
+   type=fallback_direct — et sa feuille de style repeignait par-dessus la
+   mienne les boutons du site. Un script tiers qui n'apporte rien et abime
+   la vitrine ne reste pas. Le lien direct fait le meme travail.
+
+   Le produit ouvre son onglet ; sans code, le lien retombe sur la boutique
+   et fait de meme. */
+const buy = (c, cls, label, tid) =>
+  '<a class="' + cls + '" href="' + link(c) + '"'
   + (tid ? ' data-test-id="buy-' + tid + '"' : '')
-  /* Pas de target sur un bouton accroche par Payhip : son exemple n'en a
-     pas, et un lien annonce pour un autre onglet donne au script une raison
-     de renoncer a la surimpression. Sans lui, si le script ne charge pas,
-     le clic mene a la fiche Payhip dans le meme onglet — le parcours de
-     caisse ordinaire. Le lien vers la boutique, lui, garde son onglet : il
-     n'est pas un achat, il ouvre un catalogue a cote. */
-  + (c ? '' : ' target="_blank" rel="noopener"')
-  + '>' + label + '</a>';
+  + ' target="_blank" rel="noopener">' + label + '</a>';
 
 /* Lien "See preview" : ouvre la visionneuse, ne pointe vers aucun fichier. */
 const EYE = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8s2.6-4.2 7-4.2S15 8 15 8s-2.6 4.2-7 4.2S1 8 1 8Z"/><circle cx="8" cy="8" r="1.9"/></svg>';
@@ -1207,7 +1187,7 @@ const seeprev = (k, tid) => PREVIEW_PAGES[k]
 const PLUS = '<svg class="i-add" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg>'
            + '<svg class="i-ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.4 6.4 12 13 4.6"/></svg>';
 const cadd = (cle, tid, cls, texte) =>
-  '<button class="cadd ' + cls + '" type="button" data-test-id="add-' + tid + '"'
+  '<button class="cadd pill ' + cls + '" type="button" data-test-id="add-' + tid + '"'
   + ' data-cle="' + esc(cle) + '" aria-pressed="false">' + PLUS
   + (texte ? '<span class="caddl">' + texte + '</span>' : '') + '</button>';
 
@@ -1239,8 +1219,8 @@ $('#kitgrid').innerHTML = ALL.filter(p => p.status === 'kit').map(p => {
    + '<span class="u">'+esc(p.pages)+'</span></div>'+tryline+seeprev(p.key, 'kit-'+p.key)
    /* Prefixe 'kit-' : ce meme kit reparait plus bas dans le catalogue, et
       deux elements portant le meme repere n'en designent plus aucun. */
-   + '<div class="acts">' + cadd(p.key, 'kit-'+p.key, 'wide', 'Add to basket')
-   + buy(code(p.key), 'btn wide hollow', 'Buy this kit now', 'kit-'+p.key) + '</div>'
+   + '<div class="acts">' + cadd(p.key, 'kit-'+p.key, '', 'Add to basket')
+   + buy(code(p.key), 'buynow', 'Buy this kit now <em aria-hidden=\"true\">&rarr;</em>', 'kit-'+p.key) + '</div>'
    + '</div></div></article>';
 }).join('');
 
@@ -1261,8 +1241,8 @@ $('#bundlegrid').innerHTML = BUNDLES.map(b => {
    + (save>0?'<span class="save">Save $'+save+'</span>':'')+'</div>'
    + '<p class="perkit">$'+per+' a kit · '+b.kits.length+' complete kits</p>'
    + '<button class="seeprev" type="button" data-bundle="'+esc(b.name)+'">'+EYE+'See preview</button>'
-   + '<div class="acts">' + cadd('bundle:' + b.name, 'bundle-'+slug(b.name), 'wide', 'Add to basket')
-   + buy(code('bundle:' + b.name), 'btn wide hollow', 'Buy this bundle now', 'bundle-'+slug(b.name))
+   + '<div class="acts">' + cadd('bundle:' + b.name, 'bundle-'+slug(b.name), '', 'Add to basket')
+   + buy(code('bundle:' + b.name), 'buynow', 'Buy this bundle now <em aria-hidden=\"true\">&rarr;</em>', 'bundle-'+slug(b.name))
    + '</div></div></article>';
 }).join('');
 
@@ -1291,9 +1271,9 @@ function card(p, pre){
       0 $ n'a rien a faire dans une caisse. Son bouton reste donc seul, et
       plein — c'est la seule action de la carte. */
    + '<div class="acts">'
-   + (free ? buy(code(p.key), 'btn wide', 'Download free', pre+p.key)
-           : cadd(p.key, pre+p.key, 'wide', 'Add to basket')
-             + buy(code(p.key), 'btn wide hollow', 'Buy now', pre+p.key))
+   + (free ? buy(code(p.key), 'pill', 'Download free', pre+p.key)
+           : cadd(p.key, pre+p.key, '', 'Add to basket')
+             + buy(code(p.key), 'buynow', 'Buy now <em aria-hidden=\"true\">&rarr;</em>', pre+p.key))
    + '</div></div></div></article>';
 }
 
@@ -1372,14 +1352,6 @@ function ouvreVisionneuse(nom, detail, lien, libelle, pages){
   const b = $('#pvbuy');
   b.href = lien;
   b.textContent = libelle;
-  /* Un seul bouton pour tous les produits : son data-product suit celui
-     qu'on regarde. La classe, elle, ne bouge pas — Payhip accroche ses
-     boutons une fois, et un bouton qui prend la classe plus tard ne serait
-     jamais accroche. Sans code, le lien retombe sur la boutique : on retire
-     le data-product, et le clic reprend le chemin ordinaire. */
-  const codeVu = /payhip\.com\/b\/([A-Za-z0-9]+)/.exec(lien);
-  if (codeVu) b.dataset.product = codeVu[1];
-  else delete b.dataset.product;
   pvPages.innerHTML = pages.map((pg, i) =>
     '<figure class="pvpage"><img src="' + pg.src + '"'
     + ' alt="' + esc(pg.alt) + '" loading="lazy"'
@@ -1840,19 +1812,5 @@ document.addEventListener('click', e => {
 marqueBoutons();
 </script>
 
-<!-- La caisse Payhip en surimpression : le paiement s'ouvre par-dessus le
-     site au lieu d'emmener la cliente sur payhip.com.
-
-     Il est ici, et non dans le <head>, pour deux raisons. Les 42 boutons
-     d'achat sont fabriques par le script ci-dessus : charge en tete, Payhip
-     chercherait des boutons qui n'existent pas encore. Et un script tiers
-     bloquant en tete retarderait le premier affichage, qu'on vient
-     justement d'alleger.
-
-     Chaque bouton garde son href et son target : si ce script ne charge pas
-     — bloque, hors ligne, CSP trop stricte — le clic fait exactement ce
-     qu'il faisait avant, il ouvre la fiche Payhip dans un onglet. La
-     surimpression est un gain, jamais une dependance. -->
-<script defer type="text/javascript" src="https://payhip.com/payhip.js"></script>
 </body>
 </html>
