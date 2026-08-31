@@ -58,7 +58,8 @@
   --accent:#5F7A52; --accent-dark:#4A6140;
   --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
   --serif:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --wrap:1400px; --gut:clamp(18px,4.5vw,44px); --r:3px;
+  --danger:#A5382C; --danger-dark:#7E2A21; --danger-wash:#FBEFED;
+  --wrap:1400px; --gut:clamp(18px,4.5vw,44px); --r:3px; --rb:11px;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -409,7 +410,7 @@ h3{font-weight:700}
 .carthead strong{font-family:var(--serif);font-size:1.02rem;flex:1}
 .cartx{flex:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--rule);
   background:none;color:var(--ink);font-size:1.25rem;line-height:1;cursor:pointer}
-.cartx:hover{background:var(--wash)}
+.cartx:hover{background:var(--surface)}
 .cartx:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .cartbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:.4rem 1.2rem}
 .cartvide{padding:2.4rem 0;text-align:center;color:var(--muted);font-size:.86rem}
@@ -428,40 +429,100 @@ h3{font-weight:700}
    l'enleve pas d'office — c'est son panier — mais on le dit, et on met le
    retrait a un clic. */
 .cdouble{margin:.5rem 0 0;padding:.5rem .6rem;border-radius:var(--r);
-  background:var(--wash);font-size:.72rem;line-height:1.45;color:var(--body)}
+  font-size:.72rem;line-height:1.45}
 .cdouble strong{font-weight:600}
 .cartfoot{flex:none;padding:1.1rem 1.2rem;border-top:1px solid var(--rule)}
 .ctotal{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.2rem}
 .ctotal span{font-size:.82rem;color:var(--muted)}
 .ctotal b{font-family:var(--serif);font-size:1.3rem;font-weight:400}
 .cnote{margin:0 0 .8rem;font-size:.7rem;color:var(--muted);line-height:1.45}
-.cadd{flex:none;width:34px;height:34px;display:inline-flex;align-items:center;
-  justify-content:center;border:1px solid var(--rule);border-radius:var(--r);
-  background:var(--card);color:var(--ink);cursor:pointer}
-.cadd:hover{border-color:var(--accent);color:var(--accent)}
-.cadd:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.cadd svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;
-  stroke-linecap:round}
-.cadd.dedans{border-color:var(--accent);background:var(--accent);color:#fff}
-.kfoot .cadd,.bundle .cadd{width:100%;height:auto;padding:.55rem;margin-top:.5rem;gap:.4rem;
-  font-size:.8rem;font-weight:500}
-.bundle .cadd{border-color:rgba(255,255,255,.3);background:none;color:#fff}
 .bundle .cadd:hover{border-color:#fff}
 @media(max-width:640px){.cartbox{width:100%}}
 
 .pbody .fbtns{display:flex;align-items:center;gap:.42rem}
 
-/* Le script Payhip pose sa propre feuille de style, chargee apres celle-ci
-   et donc gagnante a specificite egale. Ces trois selecteurs valent 0,3,0
-   contre 0,1,0 : les boutons gardent l'apparence du site, quoi que Payhip
-   decide d'appliquer a .payhip-buy-button. */
+/* ══ LES BOUTONS D'ACTION ════════════════════════════════════════════════
+   Deux gestes par carte, et une hierarchie qui se lit sans reflechir :
+   ajouter au panier remplit, acheter tout de suite se contente d'un trait.
+   L'ajout passe devant parce que c'est lui qui construit une commande a
+   plusieurs articles ; l'achat direct reste a un clic pour qui ne veut
+   qu'une chose.
+
+   Le rayon des boutons (11 px) est plus doux que celui des cartes (3 px) :
+   ce qui se touche s'arrondit, ce qui se lit reste net. */
+.acts{display:flex;flex-direction:column;gap:.5rem;margin-top:.7rem}
+
+.btn{border-radius:var(--rb);font-weight:600;letter-spacing:-.004em;
+  min-height:44px;justify-content:center;
+  transition:background .16s,border-color .16s,color .16s,transform .12s,box-shadow .16s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px -8px rgba(21,24,27,.34)}
+.btn:active{transform:translateY(0);box-shadow:none}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.sm{min-height:38px}
+
+/* Le trait plutot que l'aplat : l'achat direct, present sans dominer. */
+.btn.hollow{background:transparent;border-color:var(--rule2);color:var(--ink)}
+.btn.hollow:hover{border-color:var(--accent);color:var(--accent-dark);background:transparent}
+
+/* Le bouton d'ajout partage la forme des autres : c'est un bouton, pas une
+   icone posee a cote. Sur les cartes du catalogue il se reduit au carre,
+   faute de place a cote du prix. */
+.cadd{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
+  font:inherit;cursor:pointer;border:1px solid var(--accent);background:var(--accent);
+  color:#fff;border-radius:var(--rb);
+  transition:background .16s,border-color .16s,color .16s,transform .12s,box-shadow .16s}
+.cadd:hover{transform:translateY(-1px);box-shadow:0 6px 16px -8px rgba(21,24,27,.34)}
+.cadd:active{transform:translateY(0);box-shadow:none}
+.cadd:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cadd svg{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.cadd.wide{width:100%;min-height:44px;padding:.7rem 1rem;font-size:.86rem;font-weight:600}
+.cadd.sq{width:38px;height:38px;flex:none}
+.cadd .i-ok{display:none}
+/* Deja pris : l'aplat s'efface au profit d'une teinte, et la coche remplace
+   le plus. Le bouton reste actif — un second clic le retire. */
+.cadd.dedans{background:var(--surface);border-color:var(--accent);color:var(--accent-dark)}
+.cadd.dedans .i-add{display:none}
+.cadd.dedans .i-ok{display:block}
+
+/* La carte sombre du meilleur bundle inverse la paire. */
+.bundle.best .cadd{background:#fff;border-color:#fff;color:var(--spine)}
+.bundle.best .cadd.dedans{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.5);color:#fff}
+.bundle.best .btn.hollow{background:transparent;border-color:rgba(255,255,255,.34);color:#fff}
+.bundle.best .btn.hollow:hover{border-color:#fff;color:#fff}
+
+/* Payhip pose sa feuille de style apres celle-ci et gagnerait a specificite
+   egale. Ces selecteurs valent 0,4,1 : le site garde la main sur la forme
+   ET sur les couleurs. La premiere version n'avait ni background ni color,
+   et les boutons d'achat sortaient au vert de Payhip. */
 a.btn.payhip-buy-button,
 a.btn.sm.payhip-buy-button,
 a.btn.wide.payhip-buy-button{
-  font-family:inherit;font-size:.86rem;font-weight:500;line-height:normal;
-  text-transform:none;letter-spacing:normal;text-decoration:none;
-  border-radius:var(--r);box-shadow:none;text-shadow:none;
-  min-width:0;height:auto;vertical-align:baseline}
+  font-family:inherit;font-weight:600;line-height:normal;text-transform:none;
+  letter-spacing:-.004em;text-decoration:none;border-radius:var(--rb);
+  border-width:1px;border-style:solid;text-shadow:none;
+  min-width:0;height:auto;vertical-align:baseline;
+  background:var(--accent);border-color:var(--accent);color:#fff}
+a.btn.hollow.payhip-buy-button,
+a.btn.sm.hollow.payhip-buy-button,
+a.btn.wide.hollow.payhip-buy-button{
+  background:transparent;border-color:var(--rule2);color:var(--ink)}
+.bundle.best a.btn.hollow.payhip-buy-button{border-color:rgba(255,255,255,.34);color:#fff}
+
+/* Le doublon se voit de loin. Un brique sourd plutot qu'un rouge d'alerte :
+   ce n'est pas une erreur de la cliente, c'est un avertissement qui lui
+   fait gagner de l'argent. */
+.cinfo .cdouble{background:var(--danger-wash);color:var(--danger);
+  border-left:2px solid var(--danger);padding:.55rem .65rem}
+.cinfo .cdouble strong{color:var(--danger);font-weight:700}
+.cinfo .cdouble .cdel{color:var(--danger);font-weight:600;text-decoration:underline}
+.cinfo .cdouble .cdel:hover{color:var(--danger-dark)}
+
+/* Le prix reprend sa ligne : les deux actions se rangent dessous, comme sur
+   les kits et les bundles. Une seule facon de faire dans toute la page. */
+.pbody .foot{justify-content:flex-start}
+.pbody .acts{margin-top:.6rem}
+
 .inkit{font-size:.74rem;line-height:1.5;color:var(--muted);margin:.6rem 0 0}
 .inkit a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
 .inkit a:hover,.inkit a:focus-visible{border-bottom-color:currentColor}
@@ -1143,11 +1204,12 @@ const seeprev = (k, tid) => PREVIEW_PAGES[k]
 /* Le bouton d'ajout au panier. Les gratuits n'en ont pas : ils se
    telechargent, ils ne s'achetent pas, et un article a 0 $ n'a rien a faire
    dans une caisse. */
-const PLUS = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg>';
-const cadd = (cle, tid, texte) =>
-  '<button class="cadd" type="button" data-test-id="add-' + tid + '"'
+const PLUS = '<svg class="i-add" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg>'
+           + '<svg class="i-ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.4 6.4 12 13 4.6"/></svg>';
+const cadd = (cle, tid, cls, texte) =>
+  '<button class="cadd ' + cls + '" type="button" data-test-id="add-' + tid + '"'
   + ' data-cle="' + esc(cle) + '" aria-pressed="false">' + PLUS
-  + (texte ? '<span>' + texte + '</span>' : '') + '</button>';
+  + (texte ? '<span class="caddl">' + texte + '</span>' : '') + '</button>';
 
 /* two-page gallery markup */
 function gallery(p, tagText, tagFree){
@@ -1177,8 +1239,8 @@ $('#kitgrid').innerHTML = ALL.filter(p => p.status === 'kit').map(p => {
    + '<span class="u">'+esc(p.pages)+'</span></div>'+tryline+seeprev(p.key, 'kit-'+p.key)
    /* Prefixe 'kit-' : ce meme kit reparait plus bas dans le catalogue, et
       deux elements portant le meme repere n'en designent plus aucun. */
-   + buy(code(p.key), 'btn wide', 'Get this kit <span class="arw">&rarr;</span>', 'kit-'+p.key)
-   + cadd(p.key, 'kit-'+p.key, 'Add to basket')
+   + '<div class="acts">' + cadd(p.key, 'kit-'+p.key, 'wide', 'Add to basket')
+   + buy(code(p.key), 'btn wide hollow', 'Buy this kit now', 'kit-'+p.key) + '</div>'
    + '</div></div></article>';
 }).join('');
 
@@ -1199,8 +1261,9 @@ $('#bundlegrid').innerHTML = BUNDLES.map(b => {
    + (save>0?'<span class="save">Save $'+save+'</span>':'')+'</div>'
    + '<p class="perkit">$'+per+' a kit · '+b.kits.length+' complete kits</p>'
    + '<button class="seeprev" type="button" data-bundle="'+esc(b.name)+'">'+EYE+'See preview</button>'
-   + buy(code('bundle:' + b.name), 'btn wide', 'Get this bundle', 'bundle-'+slug(b.name))
-   + cadd('bundle:' + b.name, 'bundle-'+slug(b.name), 'Add to basket')+'</div></article>';
+   + '<div class="acts">' + cadd('bundle:' + b.name, 'bundle-'+slug(b.name), 'wide', 'Add to basket')
+   + buy(code('bundle:' + b.name), 'btn wide hollow', 'Buy this bundle now', 'bundle-'+slug(b.name))
+   + '</div></div></article>';
 }).join('');
 
 /* ─────────── product card ─────────── */
@@ -1223,10 +1286,15 @@ function card(p, pre){
    + '<h3>'+esc(p.name)+'</h3><p>'+esc(p.desc)+'</p>'
    + (complet ? '<p class="inkit">Also in the <a href="#'+complet.key+'">'
                 + esc(complet.name)+'</a> — '+esc(complet.pages)+', $'+complet.price+'.</p>' : '')
-   + '<div class="pend">'+seeprev(p.key, pre+p.key)+'<div class="foot">'+amt
-   + '<span class="fbtns">' + (free ? '' : cadd(p.key, pre+p.key, ''))
-   + buy(code(p.key), 'btn sm', free?'Download':'Buy', pre+p.key)
-   + '</span></div></div></div></article>';
+   + '<div class="pend">'+seeprev(p.key, pre+p.key)+'<div class="foot">'+amt+'</div>'
+   /* Un gratuit ne se met pas au panier : il se telecharge, et un article a
+      0 $ n'a rien a faire dans une caisse. Son bouton reste donc seul, et
+      plein — c'est la seule action de la carte. */
+   + '<div class="acts">'
+   + (free ? buy(code(p.key), 'btn wide', 'Download free', pre+p.key)
+           : cadd(p.key, pre+p.key, 'wide', 'Add to basket')
+             + buy(code(p.key), 'btn wide hollow', 'Buy now', pre+p.key))
+   + '</div></div></div></article>';
 }
 
 /* ─────────── tabs ─────────── */
@@ -1679,6 +1747,8 @@ function marqueBoutons(){
     b.setAttribute('aria-pressed', dedans ? 'true' : 'false');
     b.setAttribute('aria-label', (dedans ? 'Remove from basket: ' : 'Add to basket: ')
                                  + nomArticle(b.dataset.cle));
+    const et = b.querySelector('.caddl');
+    if (et) et.textContent = dedans ? 'In your basket' : 'Add to basket';
   });
   const n = PANIER.length;
   const pastille = $('#cartn');
@@ -1718,7 +1788,11 @@ function rendPanier(){
     return '<div class="cline"><img src="' + imageArticle(c) + '" alt="" loading="lazy">'
       + '<div class="cinfo"><h4>' + esc(nomArticle(c)) + '</h4>'
       + '<p>' + esc(detailArticle(c)) + '</p>' + note
-      + '<button class="cdel" type="button" data-del="' + esc(c) + '">Remove</button></div>'
+      /* Un seul retrait par ligne : quand l'encadre rouge en propose deja
+         un, le second n'ajoute que de la confusion. */
+      + (dedans.length ? ''
+         : '<button class="cdel" type="button" data-del="' + esc(c) + '">Remove</button>')
+      + '</div>'
       + '<span class="cprix">$' + prixArticle(c) + '</span></div>';
   }).join('');
   const total = PANIER.reduce((s, c) => s + prixArticle(c), 0);
